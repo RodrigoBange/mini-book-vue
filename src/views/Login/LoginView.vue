@@ -12,18 +12,18 @@
                          style="width: 185px;" alt="logo">
                     <h4 class="mt-1 mb-3 pb-1">Welcome to Mini Book</h4>
                   </div>
-                  <form>
+                  <form @submit.prevent="login">
                     <div class="form-outline mb-4">
                       <label class="form-label" for="email">Email</label>
-                      <input type="email" id="email" class="form-control"
+                      <input type="email" v-model="user.email" class="form-control"
                              placeholder="Email address" required/>
                     </div>
                     <div class="form-outline mb-4">
                       <label class="form-label" for="password">Password</label>
-                      <input type="password" id="password" class="form-control" placeholder="Password" required/>
+                      <input type="password" v-model="user.password" class="form-control" placeholder="Password" required/>
                     </div>
                     <div class="text-center pt-1 mb-3 pb-1">
-                      <button class="btn btn-primary btn-block fa-lg gradient" type="button">Log
+                      <button class="btn btn-primary btn-block fa-lg gradient" type="submit">Log
                         in</button>
                     </div>
                     <div class="d-flex align-items-center justify-content-center pb-4">
@@ -42,9 +42,30 @@
 </template>
 
 <script>
+import {useUserStore} from "@/stores/UserStore";
+
 export default {
-  name: "LoginView"
-}
+  name: "LoginView",
+  data() {
+    return {
+      user: {
+        email: "",
+        password: ""
+      }
+    };
+  },
+  methods: {
+    login() {
+      useUserStore().login(this.user)
+          .then((response) => {
+            console.log(response);
+            this.$router.push({path: "/"});
+          }).catch((error) => {
+        console.log(error);
+      });
+    }
+  }
+};
 </script>
 
 <style scoped>

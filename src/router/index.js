@@ -1,9 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import Home from '../views/HomeView.vue';
+import Feed from "@/views/Home/Feed.vue";
 import LoginView from "@/views/Login/LoginView.vue";
 import RegisterView from "@/views/Login/RegisterView.vue";
-import Feed from "@/views/Home/Feed.vue";
 import Profile from "@/views/Account/Profile.vue";
 import EditProfile from "@/views/Account/EditProfile.vue";
 import ProductList from '../components/products/ProductList.vue';
@@ -12,10 +11,9 @@ import EditProduct from '../components/products/EditProduct.vue';
 
 
 const routes = [
-  { path: '/', component: Home },
+  { path: '/', component: Feed },
   { path: '/login', component: LoginView},
   { path: '/register', component: RegisterView},
-  { path: '/feed', component: Feed},
   { path: '/profile', component: Profile},
   { path: '/editprofile', component: EditProfile},
   { path: '/products', component: ProductList },

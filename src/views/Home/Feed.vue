@@ -167,8 +167,15 @@
 </template>
 
 <script>
+import {useUserStore} from "@/stores/UserStore";
+
 export default {
-  name: "Feed"
+  name: "Home",
+  mounted() {
+    if (!useUserStore().getLoggedIn) {
+      this.$router.push({path: "/login"});
+    }
+  }
 }
 </script>
 

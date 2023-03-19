@@ -12,22 +12,24 @@
                          style="width: 185px;" alt="logo">
                     <h4 class="mt-1 mb-3 pb-1">Sign up to Mini Book</h4>
                   </div>
-                  <form>
+                  <form @submit.prevent="registerUser">
                     <div class="form-outline mb-4">
                       <label class="form-label" for="email">Email</label>
-                      <input type="email" id="email" class="form-control"
+                      <input type="email" v-model="user.email" class="form-control"
                              placeholder="Email address" required/>
                     </div>
                     <div class="form-outline mb-4">
                       <label class="form-label" for="password">Password</label>
-                      <input type="password" id="password" class="form-control" placeholder="Password" required/>
+                      <input type="password" v-model="user.password" class="form-control"
+                             placeholder="Password" required/>
                     </div>
                     <div class="form-outline mb-4">
                       <label class="form-label" for="password">Confirm Password</label>
-                      <input type="password" id="password" class="form-control" placeholder="Confirm Password" required/>
+                      <input type="password" class="form-control"
+                             placeholder="Confirm Password" required/>
                     </div>
                     <div class="text-center pt-1 mb-3 pb-1">
-                      <button class="btn btn-primary btn-block fa-lg gradient mb-0" type="button">Sign up
+                      <button class="btn btn-primary btn-block fa-lg gradient mb-0" type="submit">Sign up
                       </button>
                     </div>
                     <div class="d-flex align-items-center justify-content-center pb-4">
@@ -46,9 +48,33 @@
 </template>
 
 <script>
+import axios from "@/axios-auth.js";
+
 export default {
-  name: "RegisterView"
-}
+  name: "RegisterView",
+  data() {
+    return {
+      user: {
+        email: "",
+        password: ""
+      }
+    };
+  },
+  methods: {
+    registerUser() {
+      axios.post("/user/register", this.user)
+          .then(
+              response => {
+                //router.replace('/login')
+                console.log(response);
+              }
+          )
+          .catch(
+              error => console.log(error)
+          )
+    }
+  }
+};
 </script>
 
 <style scoped>

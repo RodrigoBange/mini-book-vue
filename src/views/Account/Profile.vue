@@ -58,8 +58,15 @@
 </template>
 
 <script>
+import {useUserStore} from "@/stores/UserStore";
+
 export default {
-  name: "Profile"
+  name: "Profile",
+  mounted() {
+    if (!useUserStore().getLoggedIn) {
+      this.$router.push({path: "/login"});
+    }
+  }
 }
 </script>
 

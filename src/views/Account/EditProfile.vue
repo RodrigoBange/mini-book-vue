@@ -94,8 +94,15 @@
 </template>
 
 <script>
+import {useUserStore} from "@/stores/UserStore";
+
 export default {
-  name: "EditProfile"
+  name: "EditProfile",
+  mounted() {
+    if (!useUserStore().getLoggedIn) {
+      this.$router.push({path: "/login"});
+    }
+  }
 }
 </script>
 
