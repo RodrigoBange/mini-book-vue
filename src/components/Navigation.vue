@@ -5,10 +5,6 @@
         <li class="nav-item" v-if="loggedIn === true">
           <router-link to="/" class="nav-link" active-class="active"
             >Home</router-link>
-        </li>      
-        <li class="nav-item" v-if="loggedIn === true">
-          <router-link to="/products" class="nav-link" active-class="active"
-            >Products</router-link>
         </li>
         <li class="nav-item" v-if="loggedIn === true">
           <router-link to="/editprofile" class="nav-link" active-class="active"
