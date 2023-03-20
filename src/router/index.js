@@ -14,8 +14,8 @@ const routes = [
   { path: '/', component: Feed },
   { path: '/login', component: LoginView},
   { path: '/register', component: RegisterView},
-  { path: '/profile', component: Profile},
-  { path: '/editprofile', component: EditProfile},
+  { path: '/profile/:id', component: Profile, props: true },
+  { path: '/editprofile/:id', component: EditProfile, props: true},
   { path: '/products', component: ProductList },
   { path: '/createproduct', component: CreateProduct },
   { path: '/editproduct/:id', component: EditProduct, props: true  }

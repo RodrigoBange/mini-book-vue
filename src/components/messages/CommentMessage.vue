@@ -7,7 +7,7 @@
   <div class="border-0 pt-2" v-show="display">
     <div class="d-flex flex-start w-100">
       <img class="rounded-circle shadow-1-strong me-3"
-           src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(19).webp" alt="avatar" width="65" height="65"
+           src="/images/blank_avatar.png" alt="avatar" width="65" height="65"
       />
       <div class="form-outline w-75">
         <label class="form-label" for="textAreaExample">Write a message</label>

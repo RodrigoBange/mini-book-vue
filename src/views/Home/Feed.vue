@@ -22,6 +22,7 @@
         </div>
       </div>
     </div>
+  <div class="position-fixed fixed-bottom">test</div>
 </main>
 </template>
 

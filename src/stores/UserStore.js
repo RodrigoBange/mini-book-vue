@@ -3,10 +3,10 @@ import axios from "../axios-auth";
 
 export const useUserStore = defineStore('userStore', {
     state: () => ({
+        userId: '',
         email: '',
         token: '',
         firstName: '',
-        lastName: ''
     }),
     getters: {
         getLoggedIn() {
@@ -21,13 +21,15 @@ export const useUserStore = defineStore('userStore', {
                 password: user.password
             }).then(response => {
                 axios.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.token;
-                localStorage.setItem('token', response.data.token);
+                localStorage.setItem('userId', response.data.userId);
                 localStorage.setItem('email', response.data.email);
+                localStorage.setItem('token', response.data.token);
+                localStorage.setItem('firstName', response.data.firstName);
 
+                this.userId = response.data.userId;
                 this.email = response.data.email;
                 this.token = response.data.token;
                 this.firstName = response.data.firstName;
-                this.lastName = response.data.lastName;
 
                 resolve(response);
             }).catch(error => reject(error));
@@ -36,18 +38,26 @@ export const useUserStore = defineStore('userStore', {
         autoLogin() {
             const token = localStorage.getItem('token');
             const email = localStorage.getItem('email');
+            const userId = localStorage.getItem('userId');
+            const firstName = localStorage.getItem('firstName');
 
             if (token && email) {
                 axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
                 this.token = token;
                 this.email = email;
+                this.userId = userId;
+                this.firstName = firstName;
             }
         },
         logout() {
             localStorage.removeItem('token');
             localStorage.removeItem('email');
+            localStorage.removeItem('userId');
+            localStorage.removeItem('firstName');
             this.token = '';
             this.email = '';
+            this.userId = '';
+            this.firstName = '';
         }
     }
 })

@@ -1,70 +1,130 @@
 <template>
   <main class="d-flex justify-content-center align-items-center">
-    <div class="container rounded bg-white p-4">
+    <div class="container rounded bg-white p-4" v-if="dataFetched">
       <div class="row">
         <div class="col-md-3 border-right">
-          <div class="d-flex flex-column align-items-center text-center">
-            <h4 class="text-right">Your name</h4>
-            <img class="rounded-circle mt-0 profile-pic" src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg">
-            <span> </span>
+          <div class="d-flex flex-column align-items-center text-center mb-2">
+            <h4 class="text-right mb-2" v-if="user.first_name !== null">{{user.first_name}} {{user.last_name}}</h4>
+            <h4 class="text-right mb-2" v-else>{{user.email}}</h4>
+            <img class="rounded-circle mt-0 profile-pic" v-if="user.profile_picture !== null" :src="user.profile_picture">
+            <img class="rounded-circle mt-0 profile-pic" v-else src="/images/blank_avatar.png">
           </div>
-          <div class="col-md-12">
-            <label class="labels">Mobile Number</label><br>
-            <span><strong>+31 6 12345678</strong></span>
+          <div class="col-md-12 mb-2" v-if="user.gender !== null">
+            <label class="labels">Gender</label><br>
+            <span><strong>{{ user.gender }}</strong></span>
           </div>
-          <div class="col-md-12">
-            <label class="labels">Email</label><br>
-            <span><strong>user@gmail.com</strong></span>
+          <div class="col-md-12 mb-2" v-if="user.birthdate">
+            <label class="labels">Birthday</label><br>
+            <span><strong>{{ user.birthdate }}</strong></span>
           </div>
-          <div class="col-md-12">
-            <label class="labels">Address 1</label><br>
-            <span><strong>Street 8, 1920HR Haarlem</strong></span>
-            <br>
-            <span><strong>ZH, The Netherlands</strong></span>
+          <div class="col-md-12 mb-2" v-if="user.state !== null && user.country !== null">
+            <label class="labels">Location</label><br>
+            <span><strong>{{ user.state + ", " + user.country }}</strong></span>
+          </div>
+          <div class="col-md-12 mb-2" v-if="user.occupation">
+            <label class="labels">Occupations</label><br>
+            <span><strong>{{ user.occupation }}</strong></span>
+          </div>
+          <div class="col-md-12 mb-2" v-if="user.relation_status">
+            <label class="labels">Relationship status</label><br>
+            <span><strong>{{ user.relation_status }}</strong></span>
           </div>
         </div>
         <div class="col-md-5 border-right">
           <div class="p-3">
             <div class="row">
-              <div>
+              <div v-if="messages.length === 0">
                 This user has not posted anything yet.
               </div>
+              <Message v-for="message in messages"
+                       :key="message.id"
+                       :message="message"
+              />
             </div>
           </div>
         </div>
         <div class="col-md-4">
-          <div class="p-3 py-5">
-            <div class="d-flex justify-content-between align-items-center experience">
-              <span>Edit Experience</span>
-              <span class="border px-3 p-1 add-experience">
-                <i class="fa fa-plus"></i>&nbsp;Experience
-              </span>
-            </div>
-            <br>
-            <div class="col-md-12">
-              <label class="labels">Motto</label>
-              <input type="text" class="form-control" placeholder="Motto" value="">
+          <div>
+            <div class="d-flex justify-content-end align-items-center" v-if="isUserProfile">
+              <button class="btn btn-primary" @click="editProfile">Edit Profile</button>
             </div>
             <br>
             <div class="col-md-12">
               <label class="labels">Bio</label>
-              <textarea type="text" class="form-control bio" placeholder="Write about yourself!" value=""></textarea>
+              <p class="border p-2" v-if="user.biography !== null">{{user.biography}}</p>
+              <p class="border p-2" v-else>This user has not written a bio yet.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
+    <div v-else>Loading data...</div>
   </main>
 </template>
 
 <script>
 import {useUserStore} from "@/stores/UserStore";
+import Message from "@/components/messages/Message.vue";
+import axios from "@/axios-auth.js";
 
 export default {
   name: "Profile",
-  mounted() {
+  props: {
+    id: Number,
+  },
+  components: {Message},
+  data() {
+    return {
+      user: {
+        user_id: this.id,
+        first_name: "",
+        last_name: "",
+        email: "",
+        phone: "",
+        city: "",
+        state: "",
+        country: "",
+        profile_picture: "",
+        biography: "",
+        gender: "",
+        birthdate: "",
+        languages: "",
+        occupation: "",
+        relation_status: "",
+        socials: "",
+      },
+      messages: [],
+      dataFetched: false,
+    }
+  },
+  beforeRouteEnter(to, from, next) {
     if (!useUserStore().getLoggedIn) {
-      this.$router.push({path: "/login"});
+      next("/login");
+    } else {
+      next();
+    }
+  },
+  mounted() {
+    this.getUser();
+  },
+  methods: {
+    getUser() {
+      axios.get("/user/profile/" + this.id)
+          .then(
+              result => {
+                this.user = result.data;
+                this.dataFetched = true;
+              }
+          )
+          .catch(
+              error => console.log(error)
+          )
+    },
+    isUserProfile() {
+      return this.user.user_id === useUserStore().userId;
+    },
+    editProfile() {
+      this.$router.push({path: "/edit-profile/" + useUserStore().userId});
     }
   }
 }
@@ -74,10 +134,6 @@ export default {
 main {
   background: rgb(196,235,253);
   background: linear-gradient(145deg, rgba(196,235,253,1) 0%, rgba(204,173,247,1) 100%);
-}
-
-.save-btn {
-  margin-right: 1.5em;
 }
 
 .profile-pic {
