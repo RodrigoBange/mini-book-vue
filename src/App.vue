@@ -14,13 +14,13 @@ useUserStore().autoLogin();
 
 <style>
 #app {
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
 main {
-  margin-top: 56px;
+  margin-top: 3.8em;
   flex-grow: 1;
 }
 

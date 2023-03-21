@@ -1,7 +1,7 @@
 <template>
   <main class="d-flex justify-content-center align-items-center">
     <div class="container rounded bg-white p-3" v-if="dataFetched">
-      <div class="row">
+      <form class="row" @submit.prevent="saveChanges">
         <div class="col-md-3 border-right">
           <div class="d-flex flex-column align-items-center text-center">
             <img class="rounded-circle profile-pic" src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg">
@@ -16,10 +16,10 @@
             </div>
             <div class="row mb-2">
               <div class="col-md-6"><label class="labels">Name</label>
-                <input type="text" class="form-control" placeholder="Name" value="" name="first_name">
+                <input type="text" class="form-control" placeholder="Name" v-model="user.first_name" name="first_name">
               </div>
               <div class="col-md-6"><label class="labels">Surname</label>
-                <input type="text" class="form-control" placeholder="Surname" value="" name="last_name">
+                <input type="text" class="form-control" placeholder="Surname" v-model="user.last_name" name="last_name">
               </div>
             </div>
             <div class="row">
@@ -27,35 +27,39 @@
                 <div class="row">
                   <div class="col-md-6">
                     <label class="labels">Gender</label>
-                    <select class="form-select" aria-label="Default select example">
-                      <option selected></option>
-                      <option value="1">Male</option>
-                      <option value="2">Female</option>
-                      <option value="3">Other</option>
+                    <select class="form-select" aria-label="Default select example" v-model="selectedGender">
+                      <option></option>
+                      <option v-for="gender in genders" :value="gender" :key="gender.id">
+                        {{ gender.gender }}
+                      </option>
                     </select>
                   </div>
                   <div class="col-md-6">
                     <label class="labels">Birthday</label>
-                    <input type="date" class="form-control" value="" placeholder="birthdate"
+                    <input type="date" class="form-control" v-model="user.birthdate" placeholder="birthdate"
                            required/>
                   </div>
                 </div>
               </div>
               <div class="col-md-12 mb-2">
                 <label class="labels">Phone Number</label>
-                <input type="text" class="form-control" placeholder="Phone number" value="" name="phone">
+                <input type="text" class="form-control" placeholder="Phone number" v-model="user.phone" name="phone">
               </div>
               <div class="col-md-12 mb-2">
                 <label class="labels">City / Town</label>
-                <input type="text" class="form-control" placeholder="City / Town" value="" name="city">
+                <input type="text" class="form-control" placeholder="City / Town" v-model="user.city" name="city">
               </div>
               <div class="col-md-12 mb-2">
                 <label class="labels">State / Province</label>
-                <input type="text" class="form-control" placeholder="State / Province" value="" name="state">
+                <input type="text" class="form-control" placeholder="State / Province" v-model="user.state" name="state">
               </div>
               <div class="col-md-12 mb-2">
                 <label class="labels">Country</label>
-                <input type="text" class="form-control" placeholder="Country" value="" name="country">
+                <input type="text" class="form-control" placeholder="Country" v-model="user.country" name="country">
+              </div>
+              <div class="col-md-12 mb-2">
+                <label class="labels">Languages</label>
+                <textarea type="text" class="form-control languages" placeholder="Languages" v-model="user.languages" name="country"></textarea>
               </div>
             </div>
           </div>
@@ -66,27 +70,23 @@
             </div>
             <div class="col-md-12 mb-2">
               <label class="labels">Bio</label>
-              <textarea type="text" class="form-control bio" placeholder="Write about yourself!" value=""></textarea>
+              <textarea type="text" class="form-control bio" placeholder="Write about yourself!" v-model="user.biography"></textarea>
             </div>
             <div class="col-md-12 mb-2">
               <label class="labels">Socials</label>
-              <textarea type="text" class="form-control socials" placeholder="Link your socials" value=""></textarea>
+              <textarea type="text" class="form-control socials" placeholder="Link your socials" v-model="user.socials"></textarea>
             </div>
             <div class="col-md-12 mb-2">
               <label class="labels">Occupation</label>
-              <input type="text" class="form-control" placeholder="Occupation" value="" name="occupation">
+              <input type="text" class="form-control" placeholder="Occupation" v-model="user.occupation" name="occupation">
             </div>
             <div class="col-md-12 mb-2">
               <label class="labels">Relationship Status</label>
-              <select class="form-select" aria-label="Default select example">
+              <select class="form-select" aria-label="Default select example" v-model="selectedRelationalStatus">
                 <option selected></option>
-                <option value="1">Single</option>
-                <option value="2">In a relationship</option>
-                <option value="3">Engaged</option>
-                <option value="4">Married</option>
-                <option value="5">Divorced</option>
-                <option value="6">Widowed</option>
-                <option value="7">It's complicated</option>
+                <option v-for="status in relationshipStatuses" :value="status" :key="status.id">
+                  {{ status.status }}
+                </option>
               </select>
             </div>
           </div>
@@ -94,12 +94,12 @@
         <div class="row">
           <div class="col-md-3"></div>
           <div class="text-center d-flex col-md-9">
-            <button class="btn btn-primary profile-button save-btn" type="button">Save changes</button>
-            <router-link to="/profile" class="btn btn-outline-secondary" type="button">Cancel</router-link>
+            <button class="btn btn-primary profile-button save-btn" type="submit">Save changes</button>
+            <router-link :to="'/profile/' + user.user_id" class="btn btn-outline-secondary" type="button">Cancel</router-link>
           </div>
         </div>
-
-      </div>
+        <p>test: {{moment('2017-12-20 11:00:00').fromNow()}}</p>
+      </form>
     </div>
     <div v-else>Loading data...</div>
   </main>
@@ -107,6 +107,8 @@
 
 <script>
 import {useUserStore} from "@/stores/UserStore";
+import axios from "@/axios-auth";
+import moment from 'moment';
 
 export default {
   name: "EditProfile",
@@ -115,16 +117,54 @@ export default {
   },
   data() {
     return {
-      user: null,
+      user: {
+        user_id: this.id,
+        first_name: "",
+        last_name: "",
+        email: "",
+        phone: "",
+        city: "",
+        state: "",
+        country: "",
+        profile_picture: "",
+        biography: "",
+        gender: "",
+        birthdate: "",
+        languages: "",
+        occupation: "",
+        relation_status: "",
+        socials: "",
+      },
+      genders: [
+        {gender: 'Male', id: 1},
+        {gender: 'Female', id: 2},
+        {gender: 'Other', id: 3},
+      ],
+      selectedGender: 0,
+      relationshipStatuses: [
+        {status: 'Single', id: 1},
+        {status: 'In a relationship', id: 2},
+        {status: 'Engaged', id: 3},
+        {status: 'Married', id: 4},
+        {status: 'Divorced', id: 5},
+        {status: 'Widowed', id: 6},
+        {status: 'It\'s complicated', id: 7},
+      ],
+      selectedRelationalStatus: 0,
       dataFetched: false,
+      moment: moment,
     }
   },
   mounted() {
-    if (this.id !== useUserStore().userId) {
+    if (this.id != useUserStore().userId) {
       this.$router.push({path: "/profile/" + useUserStore().userId});
     }
 
-    this.getUser();
+    this.getUser().then(() => {
+      this.getSelectedGender();
+      this.getSelectedRelationalStatus();
+      this.dataFetched = true;
+    });
   },
   beforeRouteEnter(to, from, next) {
     if (!useUserStore().getLoggedIn) {
@@ -135,10 +175,36 @@ export default {
   },
   methods: {
     getUser() {
-      this.dataFetched = true;
+      return axios.get("/user/profile/" + this.id)
+          .then(
+              result => {
+                this.user = result.data;
+                this.dataFetched = true;
+              }
+          )
+          .catch(
+              error => console.log(error)
+          );
+    },
+    getSelectedGender() {
+      this.selectedGender = this.genders.find(i => i.gender === this.user.gender);
+    },
+    getSelectedRelationalStatus() {
+      this.selectedRelationalStatus = this.relationshipStatuses.find(i => i.status === this.user.relation_status);
     },
     saveChanges() {
-      this.$router.push({path: "/profile"});
+      this.user.gender = this.selectedGender.gender;
+      this.user.relation_status = this.selectedRelationalStatus.status;
+      axios.put("/user/profile/" + this.id, this.user)
+          .then(
+              result => {
+                console.log(result);
+                this.$router.push({path: "/profile/" + this.id});
+              }
+          )
+          .catch(
+              error => console.log(error)
+          );
     }
   }
 }
@@ -167,6 +233,10 @@ main {
 
 .spacer {
   padding-bottom: 2.7em;
+}
+
+.languages {
+  max-height: 10em;
 }
 
 @media (max-width: 768px) {

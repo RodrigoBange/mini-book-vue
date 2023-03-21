@@ -51,7 +51,7 @@
             <br>
             <div class="col-md-12">
               <label class="labels">Bio</label>
-              <p class="border p-2" v-if="user.biography !== null">{{user.biography}}</p>
+              <p class="border p-2" v-if="user.biography !== null">{{ user.biography }}</p>
               <p class="border p-2" v-else>This user has not written a bio yet.</p>
             </div>
           </div>
@@ -124,7 +124,7 @@ export default {
       return this.user.user_id === useUserStore().userId;
     },
     editProfile() {
-      this.$router.push({path: "/edit-profile/" + useUserStore().userId});
+      this.$router.push({path: "/editprofile/" + useUserStore().userId});
     }
   }
 }
