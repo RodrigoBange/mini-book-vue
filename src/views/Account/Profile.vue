@@ -30,6 +30,7 @@
             <span><strong>{{ user.relation_status }}</strong></span>
           </div>
         </div>
+
         <div class="col-md-5 border-right overflow-auto" style="max-height: 60vh;">
           <div class="p-3 overflow-hidden">
             <div class="row">
@@ -142,9 +143,8 @@ export default {
           )
     },
     checkIfUserProfile() {
-      if(this.id === useUserStore().userId) {
-        this.isUserProfile = true;
-      }
+      this.user.user_id = this.id;
+      this.isUserProfile = this.user.user_id == useUserStore().userId;
     },
     editProfile() {
       this.$router.push({path: "/editprofile/" + useUserStore().userId});

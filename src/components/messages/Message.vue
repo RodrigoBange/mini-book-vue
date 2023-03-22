@@ -1,6 +1,7 @@
 <template>
   <div class="d-flex flex-start mb-3">
-    <router-link :to="'/profile/' + message.user_id">
+    <router-link :to="'/profile/' + message.user_id"
+                 :key="message.user_id">
       <img class="rounded-circle shadow-1-strong me-3"
            :src="message.profile_picture" alt="avatar" width="65"
            height="65" />

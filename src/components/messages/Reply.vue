@@ -1,14 +1,15 @@
 <template>
   <div class="d-flex flex-start mt-4">
-    <a class="me-3" href="#">
+    <router-link :to="'/profile/' + reply.user_id"
+                 :key="reply.user_id" class="me-3" >
       <img class="rounded-circle shadow-1-strong"
            :src="reply.profile_picture" alt="avatar"
            width="65" height="65" />
-    </a>
+    </router-link>
     <div class="flex-grow-1 flex-shrink-1">
       <div>
         <div class="d-flex justify-content-between align-items-center">
-          <router-link to="'/profile/' + reply.user_id"
+          <router-link :to="'/profile/' + reply.user_id"
                        :key="reply.user_id"
                        style="text-decoration: none; color: inherit;">
             <p class="mb-1" v-if="reply.first_name !== null">
