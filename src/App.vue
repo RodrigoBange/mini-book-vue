@@ -20,7 +20,7 @@ useUserStore().autoLogin();
 }
 
 main {
-  margin-top: 3.8em;
+  margin-top: 3.9em;
   flex-grow: 1;
 }
 

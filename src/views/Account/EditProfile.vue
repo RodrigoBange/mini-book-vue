@@ -28,7 +28,6 @@
                   <div class="col-md-6">
                     <label class="labels">Gender</label>
                     <select class="form-select" aria-label="Default select example" v-model="selectedGender">
-                      <option></option>
                       <option v-for="gender in genders" :value="gender" :key="gender.id">
                         {{ gender.gender }}
                       </option>
@@ -36,8 +35,7 @@
                   </div>
                   <div class="col-md-6">
                     <label class="labels">Birthday</label>
-                    <input type="date" class="form-control" v-model="user.birthdate" placeholder="birthdate"
-                           required/>
+                    <input type="date" class="form-control" v-model="user.birthdate" placeholder="birthdate"/>
                   </div>
                 </div>
               </div>
@@ -83,7 +81,6 @@
             <div class="col-md-12 mb-2">
               <label class="labels">Relationship Status</label>
               <select class="form-select" aria-label="Default select example" v-model="selectedRelationalStatus">
-                <option selected></option>
                 <option v-for="status in relationshipStatuses" :value="status" :key="status.id">
                   {{ status.status }}
                 </option>
@@ -95,7 +92,7 @@
           <div class="col-md-3"></div>
           <div class="text-center d-flex col-md-9">
             <button class="btn btn-primary profile-button save-btn" type="submit">Save changes</button>
-            <router-link :to="'/profile/' + user.user_id" class="btn btn-outline-secondary" type="button">Cancel</router-link>
+            <router-link :to="'/profile/' + this.id" class="btn btn-outline-secondary" type="button">Cancel</router-link>
           </div>
         </div>
         <p>test: {{moment('2017-12-20 11:00:00').fromNow()}}</p>
@@ -136,12 +133,14 @@ export default {
         socials: "",
       },
       genders: [
+        {gender: '', id: 0},
         {gender: 'Male', id: 1},
         {gender: 'Female', id: 2},
         {gender: 'Other', id: 3},
       ],
       selectedGender: 0,
       relationshipStatuses: [
+        {status: '', id: 0},
         {status: 'Single', id: 1},
         {status: 'In a relationship', id: 2},
         {status: 'Engaged', id: 3},
@@ -163,6 +162,7 @@ export default {
     this.getUser().then(() => {
       this.getSelectedGender();
       this.getSelectedRelationalStatus();
+
       this.dataFetched = true;
     });
   },
@@ -175,7 +175,7 @@ export default {
   },
   methods: {
     getUser() {
-      return axios.get("/user/profile/" + this.id)
+      return axios.get("/users/" + this.id)
           .then(
               result => {
                 this.user = result.data;
@@ -187,18 +187,30 @@ export default {
           );
     },
     getSelectedGender() {
-      this.selectedGender = this.genders.find(i => i.gender === this.user.gender);
+      if (this.user.gender !== null){
+        this.selectedGender = this.genders.find(i => i.gender === this.user.gender);
+      } else {
+        this.selectedGender = this.genders[0];
+      }
     },
     getSelectedRelationalStatus() {
-      this.selectedRelationalStatus = this.relationshipStatuses.find(i => i.status === this.user.relation_status);
+      if (this.user.relation_status !== null)
+      {
+        this.selectedRelationalStatus = this.relationshipStatuses.find(i => i.status === this.user.relation_status);
+      } else {
+        this.selectedRelationalStatus = this.relationshipStatuses[0];
+      }
     },
     saveChanges() {
+      console.log(this.selectedGender.gender);
       this.user.gender = this.selectedGender.gender;
       this.user.relation_status = this.selectedRelationalStatus.status;
-      axios.put("/user/profile/" + this.id, this.user)
+      axios.put("/users/" + this.id, this.user)
           .then(
               result => {
                 console.log(result);
+                useUserStore().firstName = this.user.first_name;
+                useUserStore().lastName = this.user.last_name;
                 this.$router.push({path: "/profile/" + this.id});
               }
           )

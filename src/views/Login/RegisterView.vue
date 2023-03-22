@@ -62,7 +62,7 @@ export default {
   },
   methods: {
     registerUser() {
-      axios.post("/user/register", this.user)
+      axios.post("/users/register", this.user)
           .then(
               response => {
                 //router.replace('/login')

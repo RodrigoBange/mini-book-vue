@@ -30,14 +30,14 @@
             <span><strong>{{ user.relation_status }}</strong></span>
           </div>
         </div>
-        <div class="col-md-5 border-right">
-          <div class="p-3">
+        <div class="col-md-5 border-right overflow-auto" style="max-height: 60vh;">
+          <div class="p-3 overflow-hidden">
             <div class="row">
               <div v-if="messages.length === 0">
                 This user has not posted anything yet.
               </div>
               <Message v-for="message in messages"
-                       :key="message.id"
+                       :key="message.message_id"
                        :message="message"
               />
             </div>
@@ -95,6 +95,7 @@ export default {
       },
       messages: [],
       dataFetched: false,
+      isUserProfile: false,
     }
   },
   beforeRouteEnter(to, from, next) {
@@ -106,10 +107,19 @@ export default {
   },
   mounted() {
     this.getUser();
+    this.getUserMessages();
+    this.checkIfUserProfile();
+  },
+  watch: {
+    id: function () {
+      this.getUser();
+      this.getUserMessages();
+      this.checkIfUserProfile();
+    }
   },
   methods: {
     getUser() {
-      axios.get("/user/profile/" + this.id)
+      axios.get("/users/" + this.id)
           .then(
               result => {
                 this.user = result.data;
@@ -120,8 +130,21 @@ export default {
               error => console.log(error)
           )
     },
-    isUserProfile() {
-      return this.user.user_id === useUserStore().userId;
+    getUserMessages() {
+      axios.get("/messages/" + this.id)
+          .then(
+              result => {
+                this.messages = result.data;
+              }
+          )
+          .catch(
+              error => console.log(error)
+          )
+    },
+    checkIfUserProfile() {
+      if(this.id === useUserStore().userId) {
+        this.isUserProfile = true;
+      }
     },
     editProfile() {
       this.$router.push({path: "/editprofile/" + useUserStore().userId});

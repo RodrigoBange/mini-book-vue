@@ -13,7 +13,7 @@
       </ul>
       <ul class="navbar-nav mb-2 mb-md-0">
         <li class="nav-item" v-if="loggedIn === true">
-          <router-link :to="'/profile/' + userStore.userId"
+          <router-link :to="'/profile/' + userStore.userId" :key="userStore.userId"
              class="nav-link d-flex align-items-center" active-class="active"
           >
             <p class="m-0 nav-spacing" v-if="userStore.firstName !== 'null'">{{ userStore.firstName }}</p>

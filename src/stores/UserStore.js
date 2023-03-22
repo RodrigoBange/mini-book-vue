@@ -16,7 +16,7 @@ export const useUserStore = defineStore('userStore', {
     actions: {
         login(user) {
             return new Promise((resolve, reject) => {
-            axios.post('/user/login', {
+            axios.post('/users/login', {
                 email: user.email,
                 password: user.password
             }).then(response => {

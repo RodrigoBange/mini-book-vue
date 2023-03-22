@@ -1,6 +1,6 @@
 <template>
-  <footer class="bg-light text-center text-lg-start footer-color">
-    <div class="text-center p-3">
+  <footer class="bg-light text-center text-lg-start footer-color p-3 d-flex align-items-center justify-content-center">
+    <div>
       © 2023 Copyright:
       <router-link to="/" class="text-dark">MiniBook.com</router-link>
     </div>

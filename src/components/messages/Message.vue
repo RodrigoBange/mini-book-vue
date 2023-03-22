@@ -1,77 +1,90 @@
 <template>
   <div class="d-flex flex-start mb-3">
-    <img class="rounded-circle shadow-1-strong me-3"
-         :src="message.profile_picture" alt="avatar" width="65"
-         height="65" />
+    <router-link :to="'/profile/' + message.user_id">
+      <img class="rounded-circle shadow-1-strong me-3"
+           :src="message.profile_picture" alt="avatar" width="65"
+           height="65" />
+    </router-link>
     <div class="flex-grow-1 flex-shrink-1">
       <div>
         <div class="d-flex justify-content-between align-items-center">
-          <p class="mb-1">
-            {{message.user_name}} <span class="small">- {{message.time_posted}}</span>
-          </p>
+          <router-link :to="'/profile/' + message.user_id"
+                       :key="message.user_id"
+                       style="text-decoration: none; color: inherit;">
+            <p class="mb-1" v-if="message.first_name !== null">
+              {{message.first_name}} {{message.last_name}} <span class="small">-
+              {{timeAgo}} ago</span>
+            </p>
+            <p class="mb-1" v-else>
+              {{message.email}} <span class="small">-
+              {{timeAgo}} ago</span>
+            </p>
+          </router-link>
         </div>
-        <p class="small mb-0">
+        <p class="small mb-0 pb-2">
           {{message.message}}
         </p>
       </div>
 
-      <CommentMessage />
+      <WriteReply
+      :parentId="message.message_id"/>
 
-      <ReplyMessage
-          v-for="replyMessage in replyMessages"
-          :key="replyMessage.message_id"
-          :replyMessage="replyMessage" />
-
+      <Reply
+          v-for="reply in replies"
+          :key="reply.message_id"
+          :reply="reply"
+          :parentId="message.message_id"/>
 
     </div>
   </div>
 </template>
 
 <script>
-import replyMessage from "@/components/messages/ReplyMessage.vue";
-import commentMessage from "@/components/messages/CommentMessage.vue";
+import reply from "@/components/messages/Reply.vue";
+import writeReply from "@/components/messages/WriteReply.vue";
+import moment from "moment";
+import axios from "@/axios-auth";
 
 export default {
   name: "Message",
   components: {
-    ReplyMessage: replyMessage,
-    CommentMessage: commentMessage,
+    Reply: reply,
+    WriteReply: writeReply,
   },
   props: {
     message: Object,
   },
   data() {
     return {
-      replyMessages: [
-        {
-          message_id: 2,
-          user_name: "Simona Disa",
-          profile_picture: "https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(11).webp",
-          time_posted: "3 hours ago",
-          message: "Show me cats!"
-        },
-        {
-          message_id: 3,
-          user_name: "John Smith",
-          profile_picture: "https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(32).webp",
-          time_posted: "4 hours ago",
-          message: "Show me dogs!"
-        },
-        {
-          message_id: 4,
-          user_name: "Lisa Cudrow",
-          profile_picture: "https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(31).webp",
-          time_posted: "5 hours ago",
-          message: "Show me mice!"
-        }
-      ],
+      replies: [],
+      timeAgo: moment.duration(moment(new Date()).diff(moment(this.message.time_posted))).humanize(),
+      messageId: this.message.message_id,
+      timer: null,
     };
+  },
+  mounted() {
+    this.getReplies();
+
+    // Update feed every 20 seconds (Web sockets would have been better if I wasn't using MySQL)
+    this.timer = setInterval(this.getReplies, 20000);
+  },
+  beforeUnmount() {
+    clearInterval(this.timer);
   },
   methods: {
     toggleComment() {
-      commentMessage.display = !commentMessage.display;
+      writeReply.display = !writeReply.display;
     },
-  }
+    getReplies() {
+      axios.get("/messages/replies/" + this.messageId)
+          .then(response => {
+            this.replies = response.data;
+          })
+          .catch(error => {
+            console.log(error);
+          });
+    },
+  },
 }
 </script>
 
