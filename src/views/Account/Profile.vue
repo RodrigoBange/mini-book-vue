@@ -1,7 +1,7 @@
 <template>
   <main class="d-flex justify-content-center align-items-center">
-    <div class="container rounded bg-white p-4" v-if="dataFetched">
-      <div class="row">
+    <div class="container rounded-0 bg-white p-4 profile h-100" v-if="dataFetched">
+      <div class="row h-100">
         <div class="col-md-3 border-right">
           <div class="d-flex flex-column align-items-center text-center mb-2">
             <h4 class="text-right mb-2" v-if="user.first_name !== null">{{user.first_name}} {{user.last_name}}</h4>
@@ -31,9 +31,9 @@
           </div>
         </div>
 
-        <div class="col-md-5 border-right overflow-auto" style="max-height: 60vh;">
-          <div class="p-3 overflow-hidden">
-            <div class="row">
+        <div class="col-md-5 border-right overflow-auto h-100">
+          <div class="p-3">
+            <div class="row h-100">
               <div v-if="messages.length === 0">
                 This user has not posted anything yet.
               </div>
@@ -113,6 +113,7 @@ export default {
   },
   watch: {
     id: function () {
+      this.dataFetched = false;
       this.getUser();
       this.getUserMessages();
       this.checkIfUserProfile();

@@ -10,6 +10,11 @@
           <router-link to="/" class="nav-link" active-class="active"
             >Home</router-link>
         </li>
+        <li class="nav-item d-flex align-items-center" v-if="loggedIn === true">
+          <router-link to="/search" class="nav-link" active-class="active"
+            >Search
+          </router-link>
+        </li>
       </ul>
       <ul class="navbar-nav mb-2 mb-md-0">
         <li class="nav-item" v-if="loggedIn === true">

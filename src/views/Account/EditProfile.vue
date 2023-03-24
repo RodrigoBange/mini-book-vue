@@ -1,6 +1,6 @@
 <template>
   <main class="d-flex justify-content-center align-items-center">
-    <div class="container rounded bg-white p-3" v-if="dataFetched">
+    <div class="container rounded-0 bg-white p-3 h-100" v-if="dataFetched">
       <form class="row" @submit.prevent="saveChanges">
         <div class="col-md-3 border-right">
           <div class="d-flex flex-column align-items-center text-center">
@@ -95,7 +95,6 @@
             <router-link :to="'/profile/' + this.id" class="btn btn-outline-secondary" type="button">Cancel</router-link>
           </div>
         </div>
-        <p>test: {{moment('2017-12-20 11:00:00').fromNow()}}</p>
       </form>
     </div>
     <div v-else>Loading data...</div>
