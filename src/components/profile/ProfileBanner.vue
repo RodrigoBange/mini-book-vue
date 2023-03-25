@@ -12,20 +12,32 @@
       </div>
       <div class="d-flex">
         <router-link :to="'/profile/' + user.user_id" class="btn btn-outline-primary btn-pf mb-0">Profile</router-link>
-        <button class="btn btn-primary mb-0">Add Friend</button>
+        <button class="btn btn-primary mb-0" @click="addFriend">Add Friend</button>
       </div>
-
     </div>
   </div>
 </template>
 
 <script>
+import {useUserStore} from "@/stores/UserStore";
+import axios from "@/axios-auth.js";
+
 export default {
   name: "ProfileBanner",
   props: {
     user: {
       type: Object,
       required: true
+    }
+  },
+  methods: {
+    addFriend() {
+      axios.post("/users/relations/" + useUserStore().userId + "/" + this.user.user_id + "/" + 0
+      ).then(response => {
+        console.log(response);
+      }).catch(error => {
+        console.log(error);
+      });
     }
   }
 }

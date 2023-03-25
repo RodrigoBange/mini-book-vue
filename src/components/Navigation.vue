@@ -17,6 +17,11 @@
         </li>
       </ul>
       <ul class="navbar-nav mb-2 mb-md-0">
+        <li class="nav-item d-flex align-items-center" v-if="loggedIn === true">
+          <router-link to="/requests" class="nav-link" active-class="active"
+          >Requests
+          </router-link>
+        </li>
         <li class="nav-item" v-if="loggedIn === true">
           <router-link :to="'/profile/' + userStore.userId" :key="userStore.userId"
              class="nav-link d-flex align-items-center" active-class="active"

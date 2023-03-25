@@ -51,6 +51,16 @@
             </div>
             <br>
             <div class="col-md-12">
+              <label class="labels">Friends</label>
+              <div class="d-flex flex-column">
+                <friend-banner v-for="friend in user.friends"
+                               :key="friend.user_id"
+                               :friend="friend"
+                />
+              </div>
+            </div>
+            <br>
+            <div class="col-md-12">
               <label class="labels">Bio</label>
               <p class="border p-2" v-if="user.biography !== null">{{ user.biography }}</p>
               <p class="border p-2" v-else>This user has not written a bio yet.</p>
@@ -67,13 +77,14 @@
 import {useUserStore} from "@/stores/UserStore";
 import Message from "@/components/messages/Message.vue";
 import axios from "@/axios-auth.js";
+import FriendBanner from "@/components/profile/FriendBanner.vue";
 
 export default {
   name: "Profile",
   props: {
     id: Number,
   },
-  components: {Message},
+  components: {FriendBanner, Message},
   data() {
     return {
       user: {
@@ -110,13 +121,15 @@ export default {
     this.getUser();
     this.getUserMessages();
     this.checkIfUserProfile();
+    this.getRelations();
   },
-  watch: {
+  watch: { // In case the user changes the id in the url
     id: function () {
       this.dataFetched = false;
       this.getUser();
       this.getUserMessages();
       this.checkIfUserProfile();
+      this.getRelations();
     }
   },
   methods: {
@@ -137,6 +150,18 @@ export default {
           .then(
               result => {
                 this.messages = result.data;
+              }
+          )
+          .catch(
+              error => console.log(error)
+          )
+    },
+    getRelations() {
+      axios.get("/users/relations/" + this.id + "/" + 0)
+          .then(
+              result => {
+                this.user.friends = result.data;
+                console.log(result.data);
               }
           )
           .catch(
