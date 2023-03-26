@@ -58,11 +58,11 @@ export default {
     login() {
       useUserStore().login(this.user)
           .then((response) => {
-            if (response.message === "Success")
+            if (response.data.message === "Success")
             {
+              console.log(response.data.message);
               this.$router.push({path: "/"});
             }
-            console.log(response);
           }).catch((error) => {
         console.log(error);
       });

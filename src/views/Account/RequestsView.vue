@@ -6,8 +6,10 @@
           <div class="card rounded-0 h-100" style="width: 100%;">
             <div class="card-body p-3 pt-0 pb-0 h-100 overflow-visible">
               <div class="row h-100">
-                <div class="col messages pt-3 pb-1 overflow-auto h-100 d-flex justify-content-center align-items-start">
-                  <friend-banner v-if="requests.length > 0"
+                <h4 class="pt-3">Pending Requests</h4>
+                <h4 class="pt-3">Friend Requests</h4>
+                <div class="col messages pt-2 pb-1 overflow-auto h-100 d-flex justify-content-center align-items-start">
+                  <request-banner v-if="requests.length > 0"
                                  v-for="request in requests"
                                  :key="request.user_id"
                                  :user="request"/>
@@ -25,10 +27,10 @@
 <script>
 import {useUserStore} from "@/stores/UserStore";
 import axios from "@/axios-auth.js";
-import FriendBanner from "@/components/profile/FriendBanner.vue";
+import RequestBanner from "@/components/requests/RequestBanner.vue";
 export default {
   name: "RequestsView",
-  components: {FriendBanner},
+  components: {RequestBanner},
   data() {
     return {
       requests: [],

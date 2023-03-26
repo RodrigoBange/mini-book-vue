@@ -59,7 +59,7 @@ export default {
   },
   methods: {
     getMessages() {
-      axios.get("/messages")
+      axios.get("/messages/" + useUserStore().userId)
         .then(response => {
           this.messages = response.data;
         })

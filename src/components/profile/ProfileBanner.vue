@@ -32,8 +32,11 @@ export default {
   },
   methods: {
     addFriend() {
-      axios.post("/users/relations/" + useUserStore().userId + "/" + this.user.user_id + "/" + 0
-      ).then(response => {
+      axios.post("/users/relations", {
+          user_id_1: parseInt(useUserStore().userId),
+          user_id_2: this.user.user_id,
+          accepted: false,
+      }).then(response => {
         console.log(response);
       }).catch(error => {
         console.log(error);

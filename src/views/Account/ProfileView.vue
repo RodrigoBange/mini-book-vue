@@ -9,7 +9,7 @@
             <img class="rounded-circle mt-0 profile-pic" v-if="user.profile_picture !== null" :src="user.profile_picture">
             <img class="rounded-circle mt-0 profile-pic" v-else src="/images/blank_avatar.png">
           </div>
-          <div class="col-md-12 mb-2" v-if="user.gender !== null">
+          <div class="col-md-12 mb-2" v-if="user.gender">
             <label class="labels">Gender</label><br>
             <span><strong>{{ user.gender }}</strong></span>
           </div>
@@ -17,7 +17,7 @@
             <label class="labels">Birthday</label><br>
             <span><strong>{{ user.birthdate }}</strong></span>
           </div>
-          <div class="col-md-12 mb-2" v-if="user.state !== null && user.country !== null">
+          <div class="col-md-12 mb-2" v-if="user.state && user.country">
             <label class="labels">Location</label><br>
             <span><strong>{{ user.state + ", " + user.country }}</strong></span>
           </div>
@@ -53,9 +53,9 @@
             <div class="col-md-12">
               <label class="labels">Friends</label>
               <div class="d-flex flex-column">
-                <friend-banner v-for="friend in user.friends"
+                <friend-banner v-for="friend in friends"
                                :key="friend.user_id"
-                               :friend="friend"
+                               :user="friend"
                 />
               </div>
             </div>
@@ -106,6 +106,7 @@ export default {
         socials: "",
       },
       messages: [],
+      friends: [],
       dataFetched: false,
       isUserProfile: false,
     }
@@ -157,10 +158,10 @@ export default {
           )
     },
     getRelations() {
-      axios.get("/users/relations/" + this.id + "/" + 0)
+      axios.get("/users/relations/" + this.id + "/" + 1)
           .then(
               result => {
-                this.user.friends = result.data;
+                this.friends = result.data;
                 console.log(result.data);
               }
           )
