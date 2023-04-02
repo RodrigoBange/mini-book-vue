@@ -12,7 +12,8 @@
       </div>
       <div class="d-flex">
         <router-link :to="'/profile/' + user.user_id" class="btn btn-outline-primary btn-pf mb-0">Profile</router-link>
-        <button class="btn btn-primary mb-0" @click="addFriend">Add Friend</button>
+        <button class="btn btn-primary mb-0" @click="addFriend" v-if="showAddButton">Add Friend</button>
+        <button class="btn btn-outline-primary mb-0 disabled" v-if="isPending">Pending</button>
       </div>
     </div>
   </div>
@@ -28,7 +29,17 @@ export default {
     user: {
       type: Object,
       required: true
-    }
+    },
+  },
+  data() {
+    return {
+      isFriend: true,
+      isPending: false,
+      useUserStore: useUserStore,
+    };
+  },
+  mounted() {
+    this.checkFriend();
   },
   methods: {
     addFriend() {
@@ -38,9 +49,33 @@ export default {
           accepted: false,
       }).then(response => {
         console.log(response);
+        this.isPending = true;
       }).catch(error => {
         console.log(error);
       });
+    },
+    checkFriend() {
+      axios.get("/users/relations/" + useUserStore().userId, {
+        params: {
+          friend: this.user.user_id
+        }
+      }).then(response => {
+        console.log("Friendship:");
+        console.log(response);
+        if (response.data === false) {
+          this.isFriend = false;
+        }
+        else if (response.data.accepted === false) {
+          this.isPending = true;
+        }
+      }).catch(error => {
+        console.log(error);
+      });
+    }
+  },
+  computed: {
+    showAddButton() {
+      return !(this.user.user_id === parseInt(useUserStore().userId) || this.isFriend === true);
     }
   }
 }

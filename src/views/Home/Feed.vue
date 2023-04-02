@@ -78,7 +78,6 @@ main {
   max-height: 95vh;
 }
 
-
 .messages {
   height: 100%;
 }
