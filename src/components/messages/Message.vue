@@ -21,6 +21,7 @@
               {{timeAgo}} ago</span>
             </p>
           </router-link>
+          <button class="btn" v-show="showDelete" @click="deleteComment()">Delete</button>
         </div>
         <p class="small mb-0 pb-2">
           {{message.message}}
@@ -34,17 +35,20 @@
           v-for="reply in replies"
           :key="reply.message_id"
           :reply="reply"
-          :parentId="message.message_id"/>
+          :parentId="message.message_id"
+          v-on:refresh-feed="updateFeed"
+      />
 
     </div>
   </div>
 </template>
 
 <script>
+import {useUserStore} from "@/stores/UserStore";
 import reply from "@/components/messages/Reply.vue";
 import writeReply from "@/components/messages/WriteReply.vue";
 import moment from "moment";
-import axios from "@/axios-auth";
+import axios from "@/axios-auth.js";
 
 export default {
   name: "Message",
@@ -84,6 +88,27 @@ export default {
           .catch(error => {
             console.log(error);
           });
+    },
+    deleteComment() {
+      axios.delete("/messages/" + this.messageId)
+          .then(response => {
+            if (response.data === true) {
+              this.updateFeed();
+            }
+            console.log(response);
+          })
+          .catch(error => {
+            console.log(error);
+          });
+    },
+    updateFeed() {
+      this.$emit("refresh-feed");
+      this.getReplies();
+    },
+  },
+  computed: {
+    showDelete() {
+      return this.message.user_id == useUserStore().userId;
     },
   },
 }

@@ -19,6 +19,7 @@
               {{ reply.email }}<span class="small"> - {{ timeAgo }} ago</span>
             </p>
           </router-link>
+          <button class="btn" v-show="showDelete" @click="deleteReply()">Delete</button>
         </div>
         <p class="small mb-0">
           {{ reply.message }}
@@ -30,6 +31,8 @@
 
 <script>
 import moment from "moment";
+import {useUserStore} from "@/stores/UserStore";
+import axios from "@/axios-auth.js";
 
 export default {
   name: "ReplyMessage",
@@ -48,10 +51,23 @@ export default {
       messageId: this.reply.message_id,
     };
   },
-  mounted() {
-  },
   methods: {
-
+    deleteReply() {
+      axios.delete("/messages/replies/" + this.reply.message_id)
+        .then(response => {
+          if (response.data === true) {
+            this.$emit("refresh-feed");
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+  },
+  computed: {
+    showDelete() {
+      return this.reply.user_id == useUserStore().userId;
+    },
   },
 }
 </script>

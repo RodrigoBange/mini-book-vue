@@ -11,6 +11,7 @@
                   v-for="message in messages"
                   :key="message.message_id"
                   :message="message"
+                  v-on:refresh-feed="updateFeed"
                   />
                   <p style="width: 100%;" v-if="messages.length <= 0">No messages at this moment!</p>
                 </div>
@@ -26,7 +27,7 @@
                   <span aria-hidden="true">&laquo;</span>
                 </button>
               </li>
-              <li v-for="page in Math.ceil(messageCount / limit)" class="page-item">
+              <li v-for="page in pages" class="page-item">
                 <button class="page-link rounded-0" @click="changePage(page)">{{page}}</button>
               </li>
               <li class="page-item">
@@ -38,7 +39,7 @@
           </nav>
         </div>
       </div>
-      <write-message />
+      <write-message v-on:refresh-feed="updateFeed"/>
     </div>
 </main>
 </template>
@@ -64,6 +65,7 @@ export default {
       timer: null,
       limit: 5,
       offset: 0,
+      pages: 0,
     };
   },
   mounted() {
@@ -71,16 +73,19 @@ export default {
       this.$router.push({path: "/login"});
     }
 
-    this.getMessages();
-    this.getTotalMessagesCount();
+    this.updateFeed();
 
     // Update feed every 20 seconds (Web sockets would have been better if I wasn't using MySQL)
-    this.timer = setInterval(this.getMessages, 20000);
+    this.timer = setInterval(this.updateFeed, 20000);
   },
   beforeUnmount() {
     clearInterval(this.timer);
   },
   methods: {
+    updateFeed() {
+      this.getMessages();
+      this.getPagination();
+    },
     getMessages() {
       axios.get("/messages/" + useUserStore().userId, {
         params: {
@@ -95,11 +100,11 @@ export default {
           console.log(error);
         });
     },
-    getTotalMessagesCount() {
+    getPagination() {
       axios.get("/messages/count/" + useUserStore().userId)
         .then(response => {
           this.messageCount = response.data;
-          console.log(this.messageCount);
+          this.pages = Math.ceil(this.messageCount / this.limit);
         })
         .catch(error => {
           console.log(error);
@@ -108,8 +113,8 @@ export default {
     changePage(page) {
       this.offset = (page - 1) * this.limit;
       this.getMessages();
-    }
-  }
+    },
+  },
 };
 </script>
 

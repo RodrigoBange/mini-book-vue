@@ -54,7 +54,7 @@ export default {
           .then(
               result => {
                 console.log(result);
-                this.$parent.getMessages();
+                this.$emit("refresh-feed");
               }
           )
           .catch(
@@ -62,7 +62,7 @@ export default {
           );
     },
     refreshFeed() {
-      this.$parent.getMessages();
+      this.$emit("refresh-feed");
     },
   }
 }
