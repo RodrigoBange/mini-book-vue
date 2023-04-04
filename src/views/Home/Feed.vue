@@ -12,6 +12,7 @@
                   :key="message.message_id"
                   :message="message"
                   v-on:refresh-feed="updateFeed"
+                  :display-only="false"
                   />
                   <p style="width: 100%;" v-if="messages.length <= 0">No messages at this moment!</p>
                 </div>

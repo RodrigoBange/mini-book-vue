@@ -19,7 +19,7 @@
               {{ reply.email }}<span class="small"> - {{ timeAgo }} ago</span>
             </p>
           </router-link>
-          <button class="btn" v-show="showDelete" @click="deleteReply()">Delete</button>
+          <button class="btn" v-show="showDelete" v-if="!displayOnly" @click="deleteReply()">Delete</button>
         </div>
         <p class="small mb-0">
           {{ reply.message }}
@@ -44,6 +44,7 @@ export default {
       type: Number,
       required: true,
     },
+    displayOnly: Boolean,
   },
   data() {
     return {
@@ -71,7 +72,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-
-</style>

@@ -21,7 +21,7 @@
               {{timeAgo}} ago</span>
             </p>
           </router-link>
-          <button class="btn" v-show="showDelete" @click="deleteComment()">Delete</button>
+          <button class="btn" v-show="showDelete" v-if="!displayOnly" @click="deleteComment()">Delete</button>
         </div>
         <p class="small mb-0 pb-2">
           {{message.message}}
@@ -29,6 +29,7 @@
       </div>
 
       <WriteReply
+      v-if="!displayOnly"
       :parentId="message.message_id"/>
 
       <Reply
@@ -37,6 +38,7 @@
           :reply="reply"
           :parentId="message.message_id"
           v-on:refresh-feed="updateFeed"
+          :display-only="displayOnly"
       />
 
     </div>
@@ -58,6 +60,7 @@ export default {
   },
   props: {
     message: Object,
+    displayOnly: Boolean,
   },
   data() {
     return {
@@ -113,7 +116,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-
-</style>

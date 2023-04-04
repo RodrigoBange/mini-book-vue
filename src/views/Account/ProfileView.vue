@@ -40,6 +40,7 @@
               <Message v-for="message in messages"
                        :key="message.message_id"
                        :message="message"
+                       :display-only="true"
               />
             </div>
           </div>
@@ -48,6 +49,11 @@
           <div>
             <div class="d-flex justify-content-end align-items-center" v-if="isUserProfile">
               <button class="btn btn-primary" @click="editProfile">Edit Profile</button>
+            </div>
+            <div class="d-flex justify-content-end align-items-center" v-if="!isUserProfile">
+              <button class="btn btn-outline-primary" @click="addFriend" v-if="!isFriend">Add Friend</button>
+              <button class="btn btn-outline-danger" @click="deleteFriend" v-if="isFriend">Delete Friend</button>
+              <button class="btn btn-outline-primary disabled">Pending</button>
             </div>
             <br>
             <div class="col-md-12">
@@ -109,6 +115,7 @@ export default {
       friends: [],
       dataFetched: false,
       isUserProfile: false,
+      isFriend: false,
     }
   },
   beforeRouteEnter(to, from, next) {
@@ -147,7 +154,7 @@ export default {
           )
     },
     getUserMessages() {
-      axios.get("/messages/" + this.id)
+      axios.get("/messages/users/" + this.id)
           .then(
               result => {
                 this.messages = result.data;
@@ -162,7 +169,6 @@ export default {
           .then(
               result => {
                 this.friends = result.data;
-                console.log(result.data);
               }
           )
           .catch(
@@ -172,6 +178,24 @@ export default {
     checkIfUserProfile() {
       this.user.user_id = this.id;
       this.isUserProfile = this.user.user_id == useUserStore().userId;
+      if (!this.isUserProfile) {
+        this.checkIfFriend();
+      }
+    },
+    checkIfFriend() {
+      axios.get("/users/relations/" + useUserStore().userId, {
+        params: {
+          friend: this.user.user_id,
+        }
+      })
+          .then(
+              result => {
+                this.isFriend = result.data.accepted === true;
+              }
+          )
+          .catch(
+              error => console.log(error)
+          )
     },
     editProfile() {
       this.$router.push({path: "/editprofile/" + useUserStore().userId});
