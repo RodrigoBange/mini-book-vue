@@ -20,17 +20,18 @@ export const useUserStore = defineStore('userStore', {
                 email: user.email,
                 password: user.password
             }).then(response => {
-                axios.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.token;
-                localStorage.setItem('userId', response.data.userId);
-                localStorage.setItem('email', response.data.email);
-                localStorage.setItem('token', response.data.token);
-                localStorage.setItem('firstName', response.data.firstName);
+                if (response.data.message === "Success") {
+                    axios.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.token;
+                    localStorage.setItem('userId', response.data.userId);
+                    localStorage.setItem('email', response.data.email);
+                    localStorage.setItem('token', response.data.token);
+                    localStorage.setItem('firstName', response.data.firstName);
 
-                this.userId = response.data.userId;
-                this.email = response.data.email;
-                this.token = response.data.token;
-                this.firstName = response.data.firstName;
-
+                    this.userId = response.data.userId;
+                    this.email = response.data.email;
+                    this.token = response.data.token;
+                    this.firstName = response.data.firstName;
+                }
                 resolve(response);
             }).catch(error => reject(error));
             });

@@ -22,6 +22,9 @@
                       <label class="form-label" for="password">Password</label>
                       <input type="password" v-model="user.password" class="form-control" placeholder="Password" required/>
                     </div>
+                    <div class="alert alert-danger" role="alert" v-show="invalid">
+                      Invalid credentials. Please try again.
+                    </div>
                     <div class="text-center pt-1 mb-3 pb-1">
                       <button class="btn btn-primary btn-block fa-lg gradient" type="submit">Log
                         in</button>
@@ -51,7 +54,8 @@ export default {
       user: {
         email: "",
         password: ""
-      }
+      },
+      invalid: false,
     };
   },
   methods: {
@@ -60,11 +64,10 @@ export default {
           .then((response) => {
             if (response.data.message === "Success")
             {
-              console.log(response.data.message);
               this.$router.push({path: "/"});
             }
           }).catch((error) => {
-        console.log(error);
+            this.invalid = true;
       });
     }
   }

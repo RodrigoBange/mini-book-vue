@@ -1,7 +1,7 @@
 <template>
-  <main class="d-flex flex-grow-1 flex-shrink-0 overflow-hidden">
-    <div class="container d-flex flex-column">
-      <div class="row d-flex justify-content-center align-content-center flex-grow-1 overflow-hidden">
+  <main class="d-flex flex-fill overflow-hidden">
+    <div class="container d-flex flex-column flex-fill">
+      <div class=" d-flex justify-content-center align-content-center flex-grow-1 overflow-hidden">
         <div class="col-md-12 col-lg-10 col-xl-8 d-flex flex-row h-100">
           <div class="card rounded-0 h-100" style="width: 100%;">
             <div class="card-body p-3 pt-0 pb-0 h-100 overflow-visible">

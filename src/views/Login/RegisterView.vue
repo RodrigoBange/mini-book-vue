@@ -28,6 +28,15 @@
                       <input type="password" class="form-control"
                              placeholder="Confirm Password" required/>
                     </div>
+                    <div class="alert alert-primary" role="alert" v-show="registered">
+                      Successfully registered!
+                      <router-link to="/login" style="color: #084298;">
+                        Please log in.
+                      </router-link>
+                    </div>
+                    <div class="alert alert-danger" role="alert" v-show="error">
+                      Email already exists / An error occurred. Please try again.
+                    </div>
                     <div class="text-center pt-1 mb-3 pb-1">
                       <button class="btn btn-primary btn-block fa-lg gradient mb-0" type="submit">Sign up
                       </button>
@@ -57,7 +66,9 @@ export default {
       user: {
         email: "",
         password: ""
-      }
+      },
+      registered: false,
+      error: false,
     };
   },
   methods: {
@@ -65,12 +76,21 @@ export default {
       axios.post("/users/register", this.user)
           .then(
               response => {
-                //router.replace('/login')
-                console.log(response);
+                if (response.data === true) {
+                  this.registered = true;
+                  this.error = false;
+                } else {
+                  this.error = true;
+                  this.registered = false;
+                }
               }
           )
           .catch(
-              error => console.log(error)
+              error => {
+                this.error = true;
+                this.registered = false;
+                console.log(error);
+              }
           )
     }
   }

@@ -190,8 +190,4 @@ main {
   max-width: 150px;
   height: auto;
 }
-
-.bio {
-  max-height: 33.6em;
-}
 </style>

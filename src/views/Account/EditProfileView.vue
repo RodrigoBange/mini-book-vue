@@ -4,7 +4,7 @@
       <form class="row" @submit.prevent="saveChanges">
         <div class="col-md-3 border-right">
           <div class="d-flex flex-column align-items-center text-center">
-            <img class="rounded-circle profile-pic" src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg">
+            <img class="rounded-circle profile-pic" src="/images/blank_avatar.png">
             <button class="btn btn-primary">Change picture</button>
             <span> </span>
           </div>
@@ -252,7 +252,7 @@ main {
 
 @media (max-width: 768px) {
   .spacer {
-    padding-bottom: 0em;
+    padding-bottom: 0;
   }
 }
 </style>

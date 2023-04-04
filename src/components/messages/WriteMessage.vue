@@ -1,5 +1,5 @@
 <template>
-  <div class="row d-flex justify-content-center justify-self-end"
+  <div class="d-flex justify-content-center justify-self-end"
        v-bind:class = "(showComment)?'expand':'shrink'">
     <div class="col-md-12 col-lg-10 col-xl-8">
       <div class="card rounded-0 p-3">
