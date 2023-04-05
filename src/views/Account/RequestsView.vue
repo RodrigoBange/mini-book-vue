@@ -7,19 +7,21 @@
             <div class="card-body p-3 pt-0 pb-0 h-100 overflow-visible">
               <div class="row">
                 <h4 class="pt-3">Pending Requests</h4>
-                <div class="col messages pt-2 pb-1 overflow-auto d-flex justify-content-center align-items-start">
+                <div class="col messages pt-2 pb-1 overflow-auto d-flex align-items-start">
                   <pending-banner v-if="pendings.length > 0"
                                  v-for="pending in pendings"
                                  :key="pending.user_id"
-                                 :user="pending"/>
+                                 :user="pending"
+                                 v-on:update-pending="updatePending(pending)"/>
                   <p style="width: 100%;" v-if="pendings.length <= 0">No pending requests at this moment!</p>
                 </div>
                 <h4 class="pt-3">Friend Requests</h4>
-                <div class="col messages pt-2 pb-1 overflow-auto d-flex justify-content-center align-items-start">
+                <div class="col messages pt-2 pb-1 overflow-auto d-flex align-items-start">
                   <request-banner v-if="requests.length > 0"
                                  v-for="request in requests"
                                  :key="request.user_id"
-                                 :user="request"/>
+                                 :user="request"
+                                 v-on:update-request="updateRequest(request)"/>
                   <p style="width: 100%;" v-if="requests.length <= 0">No requests at this moment!</p>
                 </div>
               </div>
@@ -69,6 +71,12 @@ export default {
           console.log(error);
         });
     },
+    updatePending(pending) {
+      this.pendings.splice(this.pendings.indexOf(pending), 1);
+    },
+    updateRequest(request) {
+      this.requests.splice(this.requests.indexOf(request), 1);
+    }
   },
 }
 </script>

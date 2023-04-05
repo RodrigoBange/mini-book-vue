@@ -51,9 +51,12 @@
               <button class="btn btn-primary" @click="editProfile">Edit Profile</button>
             </div>
             <div class="d-flex justify-content-end align-items-center" v-if="!isUserProfile">
-              <button class="btn btn-outline-primary" @click="addFriend" v-if="!isFriend">Add Friend</button>
+              <button class="btn btn-outline-primary" @click="addFriend" v-if="!isFriend && !isPending && !isRequestPending">Add Friend</button>
               <button class="btn btn-outline-danger" @click="deleteFriend" v-if="isFriend">Delete Friend</button>
-              <button class="btn btn-outline-primary disabled">Pending</button>
+              <button class="btn btn-outline-primary disabled" v-if="isPending">Pending</button>
+              <button class="btn btn-outline-danger" @click="cancelRequest" v-if="isPending">Cancel</button>
+              <button class="btn btn-outline-primary" @click="acceptRequest" v-if="isRequestPending">Accept</button>
+              <button class="btn btn-outline-danger" @click="declineRequest" v-if="isRequestPending">Decline</button>
             </div>
             <br>
             <div class="col-md-12">
@@ -115,7 +118,16 @@ export default {
       friends: [],
       dataFetched: false,
       isUserProfile: false,
-      isFriend: false,
+      relation: {
+        user_id_1: "",
+        user_id_2: "",
+        accepted: "",
+      },
+      relationRequest: {
+        user_id_1: "",
+        user_id_2: "",
+        accepted: "",
+      }
     }
   },
   beforeRouteEnter(to, from, next) {
@@ -130,6 +142,7 @@ export default {
     this.getUserMessages();
     this.checkIfUserProfile();
     this.getRelations();
+    this.dataFetched = true;
   },
   watch: { // In case the user changes the id in the url
     id: function () {
@@ -138,6 +151,7 @@ export default {
       this.getUserMessages();
       this.checkIfUserProfile();
       this.getRelations();
+      this.dataFetched = true;
     }
   },
   methods: {
@@ -146,7 +160,6 @@ export default {
           .then(
               result => {
                 this.user = result.data;
-                this.dataFetched = true;
               }
           )
           .catch(
@@ -180,6 +193,7 @@ export default {
       this.isUserProfile = this.user.user_id == useUserStore().userId;
       if (!this.isUserProfile) {
         this.checkIfFriend();
+        this.checkIfRequestPending();
       }
     },
     checkIfFriend() {
@@ -190,17 +204,96 @@ export default {
       })
           .then(
               result => {
-                this.isFriend = result.data.accepted === true;
+                if (result.data !== false) {
+                  this.relation = result.data;
+                } else {
+                  this.relation = null;
+                }
               }
           )
           .catch(
               error => console.log(error)
           )
     },
+    checkIfRequestPending() {
+      axios.get("/users/relations/" + this.user.user_id, {
+        params: {
+          friend: useUserStore().userId,
+        }
+      })
+          .then(
+              result => {
+                if (result.data !== false) {
+                  this.relationRequest = result.data;
+                } else {
+                  this.relationRequest = null;
+                }
+              }
+          )
+          .catch(
+              error => console.log(error)
+          )
+    },
+    cancelRequest() {
+      axios.delete("/users/relations",{
+        data: {
+          user_id_1: parseInt(useUserStore().userId),
+          user_id_2: this.id,
+          accepted: false,
+        }
+      }).then(response => {
+        if (response.data === true) {
+          this.relation = null;
+          this.isFriend = false;
+          this.isPending = false;
+        }
+      }).catch(error => {
+        console.log(error)
+      });
+    },
+    addFriend() {
+      axios.post("/users/relations", {
+        user_id_1: parseInt(useUserStore().userId),
+        user_id_2: this.id,
+        accepted: false,
+      }).then(response => {
+        if (response.data === true) {
+          this.relation = {
+            user_id_1: parseInt(useUserStore().userId),
+            user_id_2: this.id,
+            accepted: false,
+          };
+          this.isFriend = false;
+          this.isPending = true;
+        }
+      }).catch(error => {
+        console.log(error)
+      });
+    },
     editProfile() {
       this.$router.push({path: "/editprofile/" + useUserStore().userId});
     }
-  }
+  },
+  computed: {
+    isFriend: function() {
+      if (this.relation === null) {
+        return false;
+      }
+      return this.relation.accepted === true;
+    },
+    isPending: function() {
+      if (this.relation === null) {
+        return false;
+      }
+      return this.relation.accepted === false;
+    },
+    isRequestPending: function() {
+      if (this.relationRequest === null) {
+        return false;
+      }
+      return this.relationRequest.accepted === false;
+    },
+  },
 }
 </script>
 

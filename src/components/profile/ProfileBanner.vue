@@ -60,8 +60,6 @@ export default {
           friend: this.user.user_id
         }
       }).then(response => {
-        console.log("Friendship:");
-        console.log(response);
         if (response.data === false) {
           this.isFriend = false;
         }

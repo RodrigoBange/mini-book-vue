@@ -1,12 +1,15 @@
 <template>
-  <div class="d-flex p-2 rounded align-items-center link text-decoration-none w-75">
-    <router-link :to="'/profile/' + user.user_id" >
-      <img class="rounded-circle mt-0 small-profile-pic"
-           :src="user.profile_picture">
-      <p class="align-self-middle m-0 h5 flex-grow-1 text-black">{{user.first_name}}</p>
-    </router-link>
-    <div class="d-flex">
-      <button class="btn btn-outline-danger mb-0 m-2" @click="cancelRequest">CANCEL</button>
+  <div class="d-flex flex-column p-2 link text-decoration-none w-75">
+    <div class="d-flex flex-row align-items-center pb-0">
+      <router-link :to="'/profile/' + user.user_id" class="d-flex justify-content-center">
+        <img class="rounded-circle mt-0 small-profile-pic mb-2"
+             :src="user.profile_picture">
+      </router-link>
+      <button class="btn btn-outline-danger m-2" @click="cancelRequest">CANCEL</button>
+    </div>
+    <div class="d-flex p-0">
+      <p v-if="user.first_name != null" class="align-self-middle m-0 h5 flex-grow-1">{{user.first_name}} {{user.last_name}}</p>
+      <p v-else class="align-self-middle m-0 h5 flex-grow-1 text-black">{{user.email}}</p>
     </div>
   </div>
 </template>
@@ -29,7 +32,9 @@ export default {
           accepted: false,
         }
       }).then(response => {
-        console.log(response);
+        if (response.data === true) {
+          this.$emit("update-pending");
+        }
       }).catch(error => {
         console.log(error);
       });
@@ -48,6 +53,6 @@ export default {
 {
   width: 3em;
   height: 3em;
-  margin-right: 1em;
+  margin-right: 0.5em;
 }
 </style>

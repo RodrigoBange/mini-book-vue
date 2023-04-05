@@ -1,13 +1,16 @@
 <template>
-  <div class="d-flex p-2 rounded align-items-center link text-decoration-none w-75">
-    <router-link :to="'/profile/' + user.user_id" >
-      <img class="rounded-circle mt-0 small-profile-pic"
-           :src="user.profile_picture">
-      <p class="align-self-middle m-0 h5 flex-grow-1">{{user.first_name}}</p>
-    </router-link>
-    <div class="d-flex">
-      <button class="btn btn-outline-primary btn-pf mb-0 m-2" @click="acceptAndUpdate">ACCEPT</button>
-      <button class="btn btn-outline-primary mb-0 m-2" @click="declineRequest">DECLINE</button>
+  <div class="d-flex flex-column p-2 link text-decoration-none w-75">
+    <div class="d-flex flex-row align-items-center pb-0">
+      <router-link :to="'/profile/' + user.user_id" class="d-flex justify-content-center">
+        <img class="rounded-circle mt-0 small-profile-pic mb-2"
+             :src="user.profile_picture">
+      </router-link>
+      <button class="btn btn-outline-primary btn-pf m-2" @click="acceptRequest">ACCEPT</button>
+      <button class="btn btn-outline-danger m-2" @click="declineRequest">DECLINE</button>
+    </div>
+    <div class="d-flex p-0">
+      <p v-if="user.first_name != null" class="align-self-middle m-0 h5 flex-grow-1">{{user.first_name}} {{user.last_name}}</p>
+      <p v-else class="align-self-middle m-0 h5 flex-grow-1 text-black">{{user.email}}</p>
     </div>
   </div>
 </template>
@@ -22,17 +25,15 @@ export default {
     user: Object,
   },
   methods: {
-    acceptAndUpdate() {
-      this.acceptRequest();
-      this.updateRequest();
-    },
     acceptRequest() {
       axios.post("/users/relations", {
         user_id_1: parseInt(useUserStore().userId),
         user_id_2: this.user.user_id,
         accepted: true,
       }).then(response => {
-        console.log(response);
+        if (response.data === true) {
+          this.updateRequest();
+        }
       }).catch(error => {
         console.log(error);
       });
@@ -43,7 +44,9 @@ export default {
         user_id_2: parseInt(useUserStore().userId),
         accepted: true,
       }).then(response => {
-        console.log(response);
+        if (response.data === true) {
+          this.$emit("update-request");
+        }
       }).catch(error => {
         console.log(error);
       });
@@ -56,7 +59,9 @@ export default {
           accepted: false,
         }
       }).then(response => {
-        console.log(response);
+        if (response.data === true) {
+          this.$emit("update-request");
+        }
       }).catch(error => {
         console.log(error);
       });
@@ -75,6 +80,6 @@ export default {
 {
   width: 3em;
   height: 3em;
-  margin-right: 1em;
+  margin-right: 0.5em;
 }
 </style>
