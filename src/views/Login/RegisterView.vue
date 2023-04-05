@@ -72,8 +72,8 @@ export default {
     };
   },
   methods: {
-    registerUser() {
-      axios.post("/users/register", this.user)
+    async registerUser() {
+      await axios.post("/users/register", this.user)
           .then(
               response => {
                 if (response.data === true) {

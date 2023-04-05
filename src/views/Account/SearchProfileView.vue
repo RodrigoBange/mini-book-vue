@@ -42,9 +42,9 @@ export default {
     this.search();
   },
   methods: {
-    search() {
+    async search() {
       if (this.searchWord.length > 0 && this.searchWord !== " ") {
-        axios.get("/users/profiles/" + this.searchWord)
+        await axios.get("/users/profiles/" + this.searchWord)
             .then(
                 response => {
                   this.users = response.data;
@@ -58,7 +58,7 @@ export default {
                 }
             );
       } else if (this.searchWord.length === 0) {
-        axios.get("/users/profiles")
+        await axios.get("/users/profiles")
             .then(
                 response => {
                   this.users = response.data;

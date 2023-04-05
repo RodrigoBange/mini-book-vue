@@ -47,10 +47,10 @@ export default {
         this.buttonText = "Post a new message";
       }
     },
-    postMessage() {
+    async postMessage() {
       this.message.time_posted = this.moment().format("YYYY-MM-DD HH:mm:ss");
       this.message.user_id = useUserStore().userId;
-      return axios.post("/messages", this.message)
+      await axios.post("/messages", this.message)
           .then(
               result => {
                 console.log(result);

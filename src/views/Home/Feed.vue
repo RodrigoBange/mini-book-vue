@@ -69,12 +69,12 @@ export default {
       pages: 0,
     };
   },
-  mounted() {
+  async mounted() {
     if (!useUserStore().getLoggedIn) {
       this.$router.push({path: "/login"});
     }
 
-    this.updateFeed();
+    await this.updateFeed();
 
     // Update feed every 20 seconds (Web sockets would have been better if I wasn't using MySQL)
     this.timer = setInterval(this.updateFeed, 20000);
@@ -87,8 +87,8 @@ export default {
       this.getMessages();
       this.getPagination();
     },
-    getMessages() {
-      axios.get("/messages/" + useUserStore().userId, {
+    async getMessages() {
+      await axios.get("/messages/" + useUserStore().userId, {
         params: {
           limit: this.limit,
           offset: this.offset,
@@ -101,8 +101,8 @@ export default {
           console.log(error);
         });
     },
-    getPagination() {
-      axios.get("/messages/count/" + useUserStore().userId)
+    async getPagination() {
+      await axios.get("/messages/count/" + useUserStore().userId)
         .then(response => {
           this.messageCount = response.data;
           this.pages = Math.ceil(this.messageCount / this.limit);

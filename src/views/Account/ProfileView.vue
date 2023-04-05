@@ -51,14 +51,13 @@
               <button class="btn btn-primary" @click="editProfile">Edit Profile</button>
             </div>
             <div class="d-flex justify-content-end align-items-center" v-if="!isUserProfile">
-              <button class="btn btn-outline-primary" @click="addFriend" v-if="!isFriend && !isPending && !isRequestPending">Add Friend</button>
-              <button class="btn btn-outline-danger" @click="deleteFriend" v-if="isFriend">Delete Friend</button>
-              <button class="btn btn-outline-primary disabled" v-if="isPending">Pending</button>
-              <button class="btn btn-outline-danger" @click="cancelRequest" v-if="isPending">Cancel</button>
-              <button class="btn btn-outline-primary" @click="acceptRequest" v-if="isRequestPending">Accept</button>
-              <button class="btn btn-outline-danger" @click="declineRequest" v-if="isRequestPending">Decline</button>
+              <button class="btn btn-outline-primary m-2" @click="addFriend" v-if="!isFriend && !isPending && !isRequestPending">Add Friend</button>
+              <button class="btn btn-outline-danger m-2" @click="deleteFriend" v-if="isFriend">Delete Friend</button>
+              <button class="btn btn-outline-primary m-2 disabled" v-if="isPending">Pending</button>
+              <button class="btn btn-outline-danger m-2" @click="cancelRequest" v-if="isPending">Cancel</button>
+              <button class="btn btn-outline-primary m-2" @click="acceptRequest" v-if="isRequestPending">Accept</button>
+              <button class="btn btn-outline-danger m-2" @click="declineRequest" v-if="isRequestPending">Decline</button>
             </div>
-            <br>
             <div class="col-md-12">
               <label class="labels">Friends</label>
               <div class="d-flex flex-column">
@@ -127,7 +126,10 @@ export default {
         user_id_1: "",
         user_id_2: "",
         accepted: "",
-      }
+      },
+      isFriend: false,
+      isPending: false,
+      isRequestPending: false,
     }
   },
   beforeRouteEnter(to, from, next) {
@@ -137,26 +139,26 @@ export default {
       next();
     }
   },
-  mounted() {
-    this.getUser();
-    this.getUserMessages();
-    this.checkIfUserProfile();
-    this.getRelations();
+  async mounted() {
+    await this.getUser();
+    await this.getUserMessages();
+    await this.checkIfUserProfile();
+    await this.getRelations();
     this.dataFetched = true;
   },
   watch: { // In case the user changes the id in the url
-    id: function () {
+    id: async function () {
       this.dataFetched = false;
-      this.getUser();
-      this.getUserMessages();
-      this.checkIfUserProfile();
-      this.getRelations();
+      await this.getUser();
+      await this.getUserMessages();
+      await this.checkIfUserProfile();
+      await this.getRelations();
       this.dataFetched = true;
     }
   },
   methods: {
-    getUser() {
-      axios.get("/users/" + this.id)
+    async getUser() {
+      await axios.get("/users/" + this.id)
           .then(
               result => {
                 this.user = result.data;
@@ -166,8 +168,8 @@ export default {
               error => console.log(error)
           )
     },
-    getUserMessages() {
-      axios.get("/messages/users/" + this.id)
+    async getUserMessages() {
+      await axios.get("/messages/users/" + this.id)
           .then(
               result => {
                 this.messages = result.data;
@@ -177,11 +179,12 @@ export default {
               error => console.log(error)
           )
     },
-    getRelations() {
-      axios.get("/users/relations/" + this.id + "/" + 1)
+    async getRelations() {
+      await axios.get("/users/relations/" + this.id + "/" + 1)
           .then(
               result => {
                 this.friends = result.data;
+                this.checkRelations();
               }
           )
           .catch(
@@ -196,8 +199,8 @@ export default {
         this.checkIfRequestPending();
       }
     },
-    checkIfFriend() {
-      axios.get("/users/relations/" + useUserStore().userId, {
+    async checkIfFriend() {
+      await axios.get("/users/relations/" + useUserStore().userId, {
         params: {
           friend: this.user.user_id,
         }
@@ -209,14 +212,15 @@ export default {
                 } else {
                   this.relation = null;
                 }
+                this.checkRelations();
               }
           )
           .catch(
               error => console.log(error)
           )
     },
-    checkIfRequestPending() {
-      axios.get("/users/relations/" + this.user.user_id, {
+    async checkIfRequestPending() {
+      await axios.get("/users/relations/" + this.user.user_id, {
         params: {
           friend: useUserStore().userId,
         }
@@ -228,14 +232,15 @@ export default {
                 } else {
                   this.relationRequest = null;
                 }
+                this.checkRelations();
               }
           )
           .catch(
               error => console.log(error)
           )
     },
-    cancelRequest() {
-      axios.delete("/users/relations",{
+    async cancelRequest() {
+      await axios.delete("/users/relations",{
         data: {
           user_id_1: parseInt(useUserStore().userId),
           user_id_2: this.id,
@@ -244,15 +249,14 @@ export default {
       }).then(response => {
         if (response.data === true) {
           this.relation = null;
-          this.isFriend = false;
-          this.isPending = false;
+          this.checkRelations();
         }
       }).catch(error => {
         console.log(error)
       });
     },
-    addFriend() {
-      axios.post("/users/relations", {
+    async addFriend() {
+      await axios.post("/users/relations", {
         user_id_1: parseInt(useUserStore().userId),
         user_id_2: this.id,
         accepted: false,
@@ -263,31 +267,100 @@ export default {
             user_id_2: this.id,
             accepted: false,
           };
-          this.isFriend = false;
-          this.isPending = true;
+          this.checkRelations();
         }
       }).catch(error => {
         console.log(error)
       });
+    },
+    async deleteFriend() {
+      await axios.delete("/users/relations", {
+        data: {
+          user_id_1: parseInt(useUserStore().userId),
+          user_id_2: this.id,
+          accepted: true,
+        }
+      }).then(response => {
+        if (response.data === true) {
+          this.relation = null;
+          this.checkRelations();
+        }
+      }).catch(error => {
+        console.log(error)
+      });
+    },
+    async acceptRequest() {
+      await axios.post("/users/relations", {
+        user_id_1: parseInt(useUserStore().userId),
+        user_id_2: this.id,
+        accepted: true,
+      }).then(response => {
+        if (response.data === true) {
+          this.updateRequest();
+        }
+      }).catch(error => {
+        console.log(error);
+      });
+    },
+    async updateRequest() {
+      await axios.put("/users/relations", {
+        user_id_1: this.id,
+        user_id_2: parseInt(useUserStore().userId),
+        accepted: true,
+      }).then(response => {
+        if (response.data === true) {
+          this.relation = {
+            user_id_1: this.id,
+            user_id_2: parseInt(useUserStore().userId),
+            accepted: true,
+          };
+          this.relationRequest = null;
+          this.checkRelations();
+        }
+      }).catch(error => {
+        console.log(error);
+      });
+    },
+    async declineRequest() {
+      await axios.delete("/users/relations", {
+        data: {
+          user_id_1: this.id,
+          user_id_2: parseInt(useUserStore().userId),
+          accepted: false,
+        }
+      }).then(response => {
+        if (response.data === true) {
+          this.relation = null;
+          this.relationRequest = null;
+          this.checkRelations();
+        }
+      }).catch(error => {
+        console.log(error);
+      });
+    },
+    checkRelations() {
+      this.isFriend = this.getFriend;
+      this.isPending = this.getPending;
+      this.isRequestPending = this.getRequestPending;
     },
     editProfile() {
       this.$router.push({path: "/editprofile/" + useUserStore().userId});
     }
   },
   computed: {
-    isFriend: function() {
+    getFriend() {
       if (this.relation === null) {
         return false;
       }
       return this.relation.accepted === true;
     },
-    isPending: function() {
+    getPending() {
       if (this.relation === null) {
         return false;
       }
       return this.relation.accepted === false;
     },
-    isRequestPending: function() {
+    getRequestPending() {
       if (this.relationRequest === null) {
         return false;
       }

@@ -25,8 +25,8 @@ export default {
     user: Object,
   },
   methods: {
-    acceptRequest() {
-      axios.post("/users/relations", {
+    async acceptRequest() {
+      await axios.post("/users/relations", {
         user_id_1: parseInt(useUserStore().userId),
         user_id_2: this.user.user_id,
         accepted: true,
@@ -38,8 +38,8 @@ export default {
         console.log(error);
       });
     },
-    updateRequest() {
-      axios.put("/users/relations", {
+    async updateRequest() {
+      await axios.put("/users/relations", {
         user_id_1: this.user.user_id,
         user_id_2: parseInt(useUserStore().userId),
         accepted: true,
@@ -51,8 +51,8 @@ export default {
         console.log(error);
       });
     },
-    declineRequest() {
-      axios.delete("/users/relations", {
+    async declineRequest() {
+      await axios.delete("/users/relations", {
         data: {
           user_id_1: this.user.user_id,
           user_id_2: parseInt(useUserStore().userId),

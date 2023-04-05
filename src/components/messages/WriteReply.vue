@@ -53,10 +53,10 @@ export default {
     toggleComment() {
       this.display = !this.display;
     },
-    postReply() {
+    async postReply() {
       this.message.time_posted = this.moment().format("YYYY-MM-DD HH:mm:ss");
       this.message.user_id = useUserStore().userId;
-      return axios.post("/messages/replies/" + this.parentId, this.message)
+      await axios.post("/messages/replies/" + this.parentId, this.message)
           .then(
               result => {
                 console.log(result);

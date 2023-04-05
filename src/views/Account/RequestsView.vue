@@ -53,8 +53,8 @@ export default {
     this.getPending();
   },
   methods: {
-    getRequests() {
-      axios.get("users/relations/" + useUserStore().userId + "/" + 0)
+    async getRequests() {
+      await axios.get("users/relations/" + useUserStore().userId + "/" + 0)
         .then((response) => {
           this.requests = response.data;
         })
@@ -62,8 +62,8 @@ export default {
           console.log(error);
         });
     },
-    getPending() {
-      axios.get("users/relations/pending/" + useUserStore().userId)
+    async getPending() {
+      await axios.get("users/relations/pending/" + useUserStore().userId)
         .then((response) => {
           this.pendings = response.data;
         })

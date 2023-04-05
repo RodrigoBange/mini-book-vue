@@ -173,8 +173,8 @@ export default {
     }
   },
   methods: {
-    getUser() {
-      return axios.get("/users/" + this.id)
+    async getUser() {
+      await axios.get("/users/" + this.id)
           .then(
               result => {
                 this.user = result.data;
@@ -200,11 +200,10 @@ export default {
         this.selectedRelationalStatus = this.relationshipStatuses[0];
       }
     },
-    saveChanges() {
-      console.log(this.selectedGender.gender);
+    async saveChanges() {
       this.user.gender = this.selectedGender.gender;
       this.user.relation_status = this.selectedRelationalStatus.status;
-      axios.put("/users/" + this.id, this.user)
+      await axios.put("/users/" + this.id, this.user)
           .then(
               result => {
                 console.log(result);

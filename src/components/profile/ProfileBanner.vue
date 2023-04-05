@@ -42,8 +42,8 @@ export default {
     this.checkFriend();
   },
   methods: {
-    addFriend() {
-      axios.post("/users/relations", {
+    async addFriend() {
+      await axios.post("/users/relations", {
           user_id_1: parseInt(useUserStore().userId),
           user_id_2: this.user.user_id,
           accepted: false,
@@ -54,8 +54,8 @@ export default {
         console.log(error);
       });
     },
-    checkFriend() {
-      axios.get("/users/relations/" + useUserStore().userId, {
+    async checkFriend() {
+      await axios.get("/users/relations/" + useUserStore().userId, {
         params: {
           friend: this.user.user_id
         }

@@ -24,8 +24,8 @@ export default {
     user: Object,
   },
   methods: {
-    cancelRequest() {
-      axios.delete("/users/relations", {
+    async cancelRequest() {
+      await axios.delete("/users/relations", {
         data: {
           user_id_1: parseInt(useUserStore().userId),
           user_id_2: this.user.user_id,

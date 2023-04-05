@@ -70,8 +70,8 @@ export default {
       timer: null,
     };
   },
-  mounted() {
-    this.getReplies();
+  async mounted() {
+    await this.getReplies();
 
     // Update feed every 20 seconds (Web sockets would have been better if I wasn't using MySQL)
     this.timer = setInterval(this.getReplies, 20000);
@@ -83,8 +83,8 @@ export default {
     toggleComment() {
       writeReply.display = !writeReply.display;
     },
-    getReplies() {
-      axios.get("/messages/replies/" + this.messageId)
+    async getReplies() {
+      await axios.get("/messages/replies/" + this.messageId)
           .then(response => {
             this.replies = response.data;
           })
@@ -92,8 +92,8 @@ export default {
             console.log(error);
           });
     },
-    deleteComment() {
-      axios.delete("/messages/" + this.messageId)
+    async deleteComment() {
+      await axios.delete("/messages/" + this.messageId)
           .then(response => {
             if (response.data === true) {
               this.updateFeed();
