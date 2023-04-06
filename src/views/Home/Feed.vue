@@ -2,7 +2,7 @@
 <main class="d-flex flex-fill overflow-hidden">
     <div class="container d-flex flex-column flex-fill">
       <div class="flex-column d-flex justify-content-center align-items-center overflow-hidden flex-fill">
-        <div class="col-md-12 col-lg-10 col-xl-8 d-flex flex-fill overflow-hidden">
+        <div class="col-md-12 col-lg-10 col-xl-8 d-flex flex-fill overflow-hidden fillwidth">
           <div class="card rounded-0 h-100" style="width: 100%;">
             <div class="card-body p-3 pt-0 pb-0 h-100 overflow-visible">
               <div class="row h-100">
@@ -20,7 +20,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-12 col-lg-10 col-xl-8 d-flex justify-content-end">
+        <div class="col-md-12 col-lg-10 col-xl-8 d-flex justify-content-end fillwidth">
           <nav aria-label="navigation" class="bg-white" style="width: 100%;">
             <ul class="pagination m-0">
               <li class="page-item">
@@ -128,5 +128,15 @@ main {
 
 .messages {
   height: 100%;
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+    padding: 0;
+  }
+
+  .fillwidth {
+    width: 100%;
+  }
 }
 </style>

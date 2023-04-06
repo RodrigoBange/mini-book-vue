@@ -12,11 +12,11 @@
           <router-link :to="'/profile/' + message.user_id"
                        :key="message.user_id"
                        style="text-decoration: none; color: inherit;">
-            <p class="mb-1" v-if="message.first_name !== null">
+            <p class="mb-1 text-break" v-if="message.first_name !== null">
               {{message.first_name}} {{message.last_name}} <span class="small">-
               {{timeAgo}} ago</span>
             </p>
-            <p class="mb-1" v-else>
+            <p class="mb-1 text-break" v-else>
               {{message.email}} <span class="small">-
               {{timeAgo}} ago</span>
             </p>

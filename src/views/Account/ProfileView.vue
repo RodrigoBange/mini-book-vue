@@ -2,32 +2,39 @@
   <main class="d-flex justify-content-center align-items-center">
     <div class="container rounded-0 bg-white p-4 profile h-100" v-if="dataFetched">
       <div class="row h-100">
-        <div class="col-md-3 border-right">
+        <div class="col-md-3 border-right h-100">
           <div class="d-flex flex-column align-items-center text-center mb-2">
             <h4 class="text-right mb-2" v-if="user.first_name !== null">{{user.first_name}} {{user.last_name}}</h4>
             <h4 class="text-right mb-2" v-else>{{user.email}}</h4>
             <img class="rounded-circle mt-0 profile-pic" v-if="user.profile_picture !== null" :src="user.profile_picture">
             <img class="rounded-circle mt-0 profile-pic" v-else src="/images/blank_avatar.png">
           </div>
-          <div class="col-md-12 mb-2" v-if="user.gender">
-            <label class="labels">Gender</label><br>
-            <span><strong>{{ user.gender }}</strong></span>
-          </div>
-          <div class="col-md-12 mb-2" v-if="user.birthdate">
-            <label class="labels">Birthday</label><br>
-            <span><strong>{{ user.birthdate }}</strong></span>
-          </div>
-          <div class="col-md-12 mb-2" v-if="user.state && user.country">
-            <label class="labels">Location</label><br>
-            <span><strong>{{ user.state + ", " + user.country }}</strong></span>
-          </div>
-          <div class="col-md-12 mb-2" v-if="user.occupation">
-            <label class="labels">Occupations</label><br>
-            <span><strong>{{ user.occupation }}</strong></span>
-          </div>
-          <div class="col-md-12 mb-2" v-if="user.relation_status">
-            <label class="labels">Relationship status</label><br>
-            <span><strong>{{ user.relation_status }}</strong></span>
+          <div class="row overflow-auto flex-fill">
+            <div class="col-md-12" >
+              <label class="labels">Bio</label>
+              <p class="border p-2 overflow-auto" style="max-height: 15em;" v-if="user.biography !== null">{{ user.biography }}</p>
+              <p class="border p-2" v-else>This user has not written a bio yet.</p>
+            </div>
+            <div class="col-md-12 mb-2" v-if="user.gender">
+              <label class="labels">Gender</label><br>
+              <span><strong>{{ user.gender }}</strong></span>
+            </div>
+            <div class="col-md-12 mb-2" v-if="user.birthdate">
+              <label class="labels">Birthday</label><br>
+              <span><strong>{{ user.birthdate }}</strong></span>
+            </div>
+            <div class="col-md-12 mb-2" v-if="user.state && user.country">
+              <label class="labels">Location</label><br>
+              <span><strong>{{ user.state + ", " + user.country }}</strong></span>
+            </div>
+            <div class="col-md-12 mb-2" v-if="user.occupation">
+              <label class="labels">Occupations</label><br>
+              <span><strong>{{ user.occupation }}</strong></span>
+            </div>
+            <div class="col-md-12 mb-2" v-if="user.relation_status">
+              <label class="labels">Relationship status</label><br>
+              <span><strong>{{ user.relation_status }}</strong></span>
+            </div>
           </div>
         </div>
 
@@ -66,12 +73,6 @@
                                :user="friend"
                 />
               </div>
-            </div>
-            <br>
-            <div class="col-md-12">
-              <label class="labels">Bio</label>
-              <p class="border p-2" v-if="user.biography !== null">{{ user.biography }}</p>
-              <p class="border p-2" v-else>This user has not written a bio yet.</p>
             </div>
           </div>
         </div>

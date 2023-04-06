@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-column p-2 link text-decoration-none w-75">
+  <div class="d-flex flex-column p-2 link text-decoration-none banner">
     <div class="d-flex flex-row align-items-center pb-0">
       <router-link :to="'/profile/' + user.user_id" class="d-flex justify-content-center">
         <img class="rounded-circle mt-0 small-profile-pic mb-2"
@@ -8,8 +8,10 @@
       <button class="btn btn-outline-danger m-2" @click="cancelRequest">CANCEL</button>
     </div>
     <div class="d-flex p-0">
-      <p v-if="user.first_name != null" class="align-self-middle m-0 h5 flex-grow-1">{{user.first_name}} {{user.last_name}}</p>
-      <p v-else class="align-self-middle m-0 h5 flex-grow-1 text-black">{{user.email}}</p>
+      <router-link :to="'/profile/' + user.user_id" class="d-flex justify-content-center text-decoration-none">
+        <p v-if="user.first_name != null" class="align-self-middle m-0 h5 flex-grow-1 text-black text-break">{{user.first_name}} {{user.last_name}}</p>
+        <p v-else class="align-self-middle m-0 h5 flex-grow-1 text-black text-break">{{user.email}}</p>
+      </router-link>
     </div>
   </div>
 </template>
@@ -54,5 +56,17 @@ export default {
   width: 3em;
   height: 3em;
   margin-right: 0.5em;
+}
+
+.banner {
+  width: 50%;
+  max-width: 50%;
+}
+
+@media screen and (max-width: 768px) {
+  .banner {
+    width: 100%;
+    max-width: 100%;
+  }
 }
 </style>

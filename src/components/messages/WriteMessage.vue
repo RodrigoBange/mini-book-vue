@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex justify-content-center justify-self-end"
        v-bind:class = "(showComment)?'expand':'shrink'">
-    <div class="col-md-12 col-lg-10 col-xl-8">
+    <div class="col-md-12 col-lg-10 col-xl-8 fillwidth">
       <div class="card rounded-0 p-3">
         <div class="d-flex">
           <button type="button" class="btn btn-outline-primary btn-sm" @click="toggleComment">{{ buttonText }}</button>
@@ -77,5 +77,11 @@ export default {
 .shrink {
   max-height: 3.8em;
   transition: max-height 0.15s ease-out;
+}
+
+@media screen and (max-width: 768px) {
+  .fillwidth {
+    width: 100%;
+  }
 }
 </style>
