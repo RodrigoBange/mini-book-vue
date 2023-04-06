@@ -1,7 +1,7 @@
 <template>
   <main class="d-flex justify-content-center align-items-center">
-    <div class="container rounded-0 bg-white p-3 h-100" v-if="dataFetched">
-      <form class="row" @submit.prevent="saveChanges">
+    <div class="container rounded-0 bg-white p-3 h-100">
+      <form class="row" @submit.prevent="createUser">
         <div class="col-md-3 border-right">
           <div class="d-flex flex-column align-items-center text-center">
             <img class="rounded-circle profile-pic" src="/images/blank_avatar.png">
@@ -12,7 +12,7 @@
         <div class="col-md-5 border-right">
           <div class="p-3">
             <div class="d-flex justify-content-between align-items-center mb-2">
-              <h4 class="text-right">Profile Settings</h4>
+              <h4 class="text-right">Create New User</h4>
             </div>
             <div class="row mb-2">
               <div class="col-md-6"><label class="labels">Name</label>
@@ -38,6 +38,14 @@
                     <input type="date" class="form-control" v-model="user.birthdate" placeholder="birthdate"/>
                   </div>
                 </div>
+              </div>
+              <div class="col-md-12 mb-2">
+                <label class="labels">Email</label>
+                <input type="text" class="form-control" placeholder="Email" v-model="user.email" name="email">
+              </div>
+              <div class="col-md-12 mb-2">
+                <label class="labels">Password</label>
+                <input type="text" class="form-control" placeholder="Password" v-model="user.password" name="email">
               </div>
               <div class="col-md-12 mb-2">
                 <label class="labels">Phone Number</label>
@@ -91,26 +99,21 @@
         <div class="row">
           <div class="col-md-3"></div>
           <div class="text-center d-flex col-md-9">
-            <button class="btn btn-primary profile-button save-btn" type="submit">Save changes</button>
-            <router-link :to="'/profile/' + this.id" class="btn btn-outline-secondary" type="button">Cancel</router-link>
+            <button class="btn btn-primary profile-button save-btn" type="submit">Create User</button>
+            <router-link :to="'/admin/users'" class="btn btn-outline-secondary" type="button">Cancel</router-link>
           </div>
         </div>
       </form>
     </div>
-    <div v-else>Loading data...</div>
   </main>
 </template>
 
 <script>
-import {useUserStore} from "@/stores/UserStore";
+import moment from "moment";
 import axios from "@/axios-auth";
-import moment from 'moment';
 
 export default {
-  name: "EditProfile",
-  props: {
-    id: Number
-  },
+  name: "UserCreateView",
   data() {
     return {
       user: {
@@ -118,6 +121,7 @@ export default {
         first_name: "",
         last_name: "",
         email: "",
+        password: "",
         phone: "",
         city: "",
         state: "",
@@ -149,72 +153,25 @@ export default {
         {status: 'It\'s complicated', id: 7},
       ],
       selectedRelationalStatus: 0,
-      dataFetched: false,
       moment: moment,
     }
   },
-  mounted() {
-    if (this.id != useUserStore().userId) {
-      this.$router.push({path: "/profile/" + useUserStore().userId});
-    }
-
-    this.getUser().then(() => {
-      this.getSelectedGender();
-      this.getSelectedRelationalStatus();
-
-      this.dataFetched = true;
-    });
-  },
-  beforeRouteEnter(to, from, next) {
-    if (!useUserStore().getLoggedIn) {
-      next("/login");
-    } else {
-      next();
-    }
-  },
   methods: {
-    async getUser() {
-      await axios.get("/users/" + this.id)
-          .then(
-              result => {
-                this.user = result.data;
-                this.dataFetched = true;
-              }
-          )
-          .catch(
-              error => console.log(error)
-          );
-    },
-    getSelectedGender() {
-      if (this.user.gender !== null){
-        this.selectedGender = this.genders.find(i => i.gender === this.user.gender);
-      } else {
-        this.selectedGender = this.genders[0];
-      }
-    },
-    getSelectedRelationalStatus() {
-      if (this.user.relation_status !== null)
+    async createUser() {
+      if (this.user.email !== "" && this.user.password !== "")
       {
-        this.selectedRelationalStatus = this.relationshipStatuses.find(i => i.status === this.user.relation_status);
-      } else {
-        this.selectedRelationalStatus = this.relationshipStatuses[0];
+        this.user.gender = this.selectedGender.gender;
+        this.user.relation_status = this.selectedRelationalStatus.status;
+        await axios.post("/users", this.user)
+            .then(
+                result => {
+                  console.log(result);
+                }
+            )
+            .catch(
+                error => console.log(error)
+            );
       }
-    },
-    async saveChanges() {
-      this.user.gender = this.selectedGender.gender;
-      this.user.relation_status = this.selectedRelationalStatus.status;
-      await axios.put("/users/" + this.id, this.user)
-          .then(
-              result => {
-                console.log(result);
-                useUserStore().firstName = this.user.first_name;
-                useUserStore().lastName = this.user.last_name;
-                this.$router.push({path: "/profile/" + this.id});
-              }
-          )
-          .catch(
-              error => console.log(error)
-          );
     }
   }
 }

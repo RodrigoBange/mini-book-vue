@@ -12,7 +12,7 @@
         <div class="col-md-5 border-right">
           <div class="p-3">
             <div class="d-flex justify-content-between align-items-center mb-2">
-              <h4 class="text-right">Profile Settings</h4>
+              <h4 class="text-right">Edit User (ID: {{id}})</h4>
             </div>
             <div class="row mb-2">
               <div class="col-md-6"><label class="labels">Name</label>
@@ -38,6 +38,10 @@
                     <input type="date" class="form-control" v-model="user.birthdate" placeholder="birthdate"/>
                   </div>
                 </div>
+              </div>
+              <div class="col-md-12 mb-2">
+                <label class="labels">Email</label>
+                <input type="text" class="form-control" placeholder="Email" v-model="user.email" name="email">
               </div>
               <div class="col-md-12 mb-2">
                 <label class="labels">Phone Number</label>
@@ -92,7 +96,7 @@
           <div class="col-md-3"></div>
           <div class="text-center d-flex col-md-9">
             <button class="btn btn-primary profile-button save-btn" type="submit">Save changes</button>
-            <router-link :to="'/profile/' + this.id" class="btn btn-outline-secondary" type="button">Cancel</router-link>
+            <router-link :to="'/admin/users'" class="btn btn-outline-secondary" type="button">Cancel</router-link>
           </div>
         </div>
       </form>
@@ -102,12 +106,12 @@
 </template>
 
 <script>
-import {useUserStore} from "@/stores/UserStore";
+import moment from "moment/moment";
 import axios from "@/axios-auth";
-import moment from 'moment';
+import {useUserStore} from "@/stores/UserStore";
 
 export default {
-  name: "EditProfile",
+  name: "UserEditView",
   props: {
     id: Number
   },
@@ -154,23 +158,12 @@ export default {
     }
   },
   mounted() {
-    if (this.id != useUserStore().userId) {
-      this.$router.push({path: "/profile/" + useUserStore().userId});
-    }
-
     this.getUser().then(() => {
       this.getSelectedGender();
       this.getSelectedRelationalStatus();
 
       this.dataFetched = true;
     });
-  },
-  beforeRouteEnter(to, from, next) {
-    if (!useUserStore().getLoggedIn) {
-      next("/login");
-    } else {
-      next();
-    }
   },
   methods: {
     async getUser() {
@@ -207,9 +200,6 @@ export default {
           .then(
               result => {
                 console.log(result);
-                useUserStore().firstName = this.user.first_name;
-                useUserStore().lastName = this.user.last_name;
-                this.$router.push({path: "/profile/" + this.id});
               }
           )
           .catch(

@@ -3,7 +3,8 @@
     <router-link :to="'/profile/' +  user.user_id" class="w-100 d-flex align-items-center text-decoration-none link">
       <img class="rounded-circle mt-0 small-profile-pic"
            :src="user.profile_picture">
-      <p class="align-self-middle m-0 h5 flex-grow-1">{{ user.first_name }} {{ user.last_name }}</p>
+      <p class="align-self-middle m-0 h5 flex-grow-1 text-break" v-if="user.first_name">{{ user.first_name }} {{ user.last_name }}</p>
+      <p class="align-self-middle m-0 h5 flex-grow-1 text-break" v-else>{{ user.email }}</p>
     </router-link>
   </div>
 </template>

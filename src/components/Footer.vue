@@ -17,6 +17,7 @@ export default {
 footer {
   height: 3em;
 }
+
 .footer-color {
   background-color: #ffffff;
   border-top: 1px solid #bdcfe1;

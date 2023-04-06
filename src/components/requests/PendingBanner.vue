@@ -9,7 +9,7 @@
     </div>
     <div class="d-flex p-0">
       <router-link :to="'/profile/' + user.user_id" class="d-flex justify-content-center text-decoration-none">
-        <p v-if="user.first_name != null" class="align-self-middle m-0 h5 flex-grow-1 text-black text-break">{{user.first_name}} {{user.last_name}}</p>
+        <p v-if="user.first_name" class="align-self-middle m-0 h5 flex-grow-1 text-black text-break">{{user.first_name}} {{user.last_name}}</p>
         <p v-else class="align-self-middle m-0 h5 flex-grow-1 text-black text-break">{{user.email}}</p>
       </router-link>
     </div>

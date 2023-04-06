@@ -1,54 +1,58 @@
 <template>
- <main class="d-flex flex-fill overflow-hidden">
-   <div class="container d-flex flex-column flex-fill">
-     <div class="d-flex justify-content-center align-content-center flex-grow-1 overflow-hidden">
-       <div class="col-md-12 col-lg-10 col-xl-8 d-flex flex-row h-100">
-         <div class="card rounded-0 h-100" style="width: 100%;">
-           <div class="form-outline p-4 pb-1 pt-3">
-             <input type="search" id="form1" class="form-control"
-                    placeholder="Search for people by name, surname or email" aria-label="Search"
-             v-model="searchWord"/>
-           </div>
-             <div class="d-flex p-3 pt-0 flex-row flex-wrap profiles h-100 overflow-auto align-content-start">
-               <ProfileBanner
-                   v-for="user in users"
-                   :key="user.user_id"
-                   :user="user"/>
-               <p class="m-2 w-100 text-center" v-if="!usersFound">No users were found.</p>
-             </div>
-           <nav aria-label="navigation" class="bg-white" style="width: 100%;">
-             <ul class="pagination m-0">
-               <li class="page-item">
-                 <button class="page-link rounded-0" aria-label="Previous" @click="changePage(1)">
-                   <span aria-hidden="true">&laquo;</span>
-                 </button>
-               </li>
-               <li v-for="page in pages" class="page-item">
-                 <button class="page-link rounded-0" @click="changePage(page)">{{page}}</button>
-               </li>
-               <li class="page-item">
-                 <button class="page-link rounded-0" aria-label="Next" @click="changePage(Math.ceil(messageCount / limit))">
-                   <span aria-hidden="true">&raquo;</span>
-                 </button>
-               </li>
-             </ul>
-           </nav>
-         </div>
-       </div>
-     </div>
-   </div>
-   <p>{{error}}</p>
- </main>
+  <main class="d-flex flex-fill overflow-hidden">
+    <div class="container d-flex flex-column flex-fill">
+      <div class="d-flex justify-content-center align-content-center flex-grow-1 overflow-hidden">
+        <div class="col-md-12 col-lg-10 col-xl-8 d-flex flex-row h-100">
+          <div class="card rounded-0 h-100" style="width: 100%;">
+            <div class="form-outline p-4 pb-1 pt-3">
+              <input type="search" id="form1" class="form-control"
+                     placeholder="Search for people by name, surname or email" aria-label="Search"
+                     v-model="searchWord"/>
+              <router-link to="/admin/users/create" class="btn btn-primary mt-2">Create User</router-link>
+            </div>
+            <div class="d-flex p-3 pt-0 flex-row flex-wrap profiles h-100 overflow-auto align-content-start">
+              <UserBanner
+                  v-for="user in users"
+                  :key="user.user_id"
+                  :user="user"
+                v-on:delete-user="resetSearch"/>
+              <p class="m-2 w-100 text-center" v-if="!usersFound">No users were found.</p>
+            </div>
+            <nav aria-label="navigation" class="bg-white" style="width: 100%;">
+              <ul class="pagination m-0">
+                <li class="page-item">
+                  <button class="page-link rounded-0" aria-label="Previous" @click="changePage(1)">
+                    <span aria-hidden="true">&laquo;</span>
+                  </button>
+                </li>
+                <li v-for="page in pages" class="page-item">
+                  <button class="page-link rounded-0" @click="changePage(page)">{{page}}</button>
+                </li>
+                <li class="page-item">
+                  <button class="page-link rounded-0" aria-label="Next" @click="changePage(Math.ceil(messageCount / limit))">
+                    <span aria-hidden="true">&raquo;</span>
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p>{{error}}</p>
+  </main>
 </template>
 
 <script>
-import axios from "@/axios-auth.js";
-import ProfileBanner from "@/components/profile/ProfileBanner.vue";
+import axios from "@/axios-auth";
+import UserBanner from "@/components/admin/UserBanner.vue";
 import {useUserStore} from "@/stores/UserStore";
 
 export default {
-  name: "SearchProfile",
-  components: {ProfileBanner},
+  name: "UsersPanel",
+  components: {
+    UserBanner,
+  },
   data() {
     return {
       searchWord: "",
@@ -56,7 +60,7 @@ export default {
       userCount: 0,
       usersFound: false,
       error: "",
-      limit: 1,
+      limit: 5,
       offset: 0,
       pages: 0,
     }
@@ -137,12 +141,16 @@ export default {
       this.offset = (page - 1) * this.limit;
       this.search();
     },
-  },
-  watch: {
-    searchWord: function() {
+    resetSearch() {
       this.offset = 0;
       this.search();
     }
-  }
+  },
+  watch: {
+    searchWord: function () {
+      this.offset = 0;
+      this.search();
+    }
+  },
 }
 </script>
