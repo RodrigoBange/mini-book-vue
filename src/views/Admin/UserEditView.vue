@@ -94,9 +94,19 @@
         </div>
         <div class="row d-flex">
           <div class="col-md-3"></div>
-          <div class="text-center d-flex col-md-9 align-items-end">
-            <button class="btn btn-primary profile-button save-btn" type="submit">Save changes</button>
-            <router-link :to="'/admin/users'" class="btn btn-outline-secondary" type="button">Cancel</router-link>
+          <div class="text-center d-flex col-md-9 align-items-start flex-wrap">
+            <div class="d-flex m-2 flex-fill">
+              <div class="alert alert-success w-50 m-2" v-if="success">
+                Successfully updated!
+              </div>
+              <div class="alert alert-danger w-50 m-2" v-if="error">
+                An error occurred! Please try again.
+              </div>
+            </div>
+            <div class="w-100 d-flex">
+              <button class="btn btn-primary profile-button save-btn" type="submit">Save changes</button>
+              <router-link :to="'/admin/users'" class="btn btn-outline-secondary" type="button">Cancel</router-link>
+            </div>
           </div>
         </div>
       </form>
@@ -155,6 +165,8 @@ export default {
       selectedRelationalStatus: 0,
       dataFetched: false,
       moment: moment,
+      success: false,
+      error: false,
     }
   },
   beforeRouteEnter(to, from, next) {
@@ -215,11 +227,16 @@ export default {
           .then(
               result => {
                 console.log(result);
-
+                this.success = true;
+                this.error = false;
               }
           )
           .catch(
-              error => console.log(error)
+              error => {
+                console.log(error)
+                this.success = false;
+                this.error = true;
+              }
           );
     }
   }

@@ -27,6 +27,12 @@
           <button class="btn btn-outline-primary" @click="updateComment()">Update</button>
           <button class="btn btn-outline-danger m-2" @click="deleteComment()">Delete</button>
         </div>
+        <div class="alert alert-success w-50 p-2" v-if="success">
+          Successfully updated!
+        </div>
+        <div class="alert alert-danger w-50 p-2" v-if="error">
+          An error occurred! Please try again.
+        </div>
       </div>
     </div>
   </div>
@@ -48,6 +54,8 @@ export default {
     return {
       timeAgo: moment.duration(moment(new Date()).diff(moment(this.message.time_posted))).humanize(),
       messageId: this.message.message_id,
+      success: false,
+      error: false
     }
   },
   methods: {
@@ -68,11 +76,15 @@ export default {
           .then(response => {
             if (response.data === true) {
               this.updateFeed();
+              this.success = true;
+              this.error = false;
             }
             console.log(response);
           })
           .catch(error => {
             console.log(error);
+            this.error = true;
+            this.success = false;
           });
     },
     updateFeed() {

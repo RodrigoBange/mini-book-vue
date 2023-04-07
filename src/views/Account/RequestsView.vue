@@ -7,7 +7,7 @@
             <div class="card-body p-3 pt-0 pb-0 h-100 overflow-visible">
               <div class="row">
                 <h4 class="pt-3">Pending Requests</h4>
-                <div class="col messages pt-2 pb-1 overflow-auto d-flex align-items-start flex-wrap">
+                <div class="col messages pt-2 pb-1 overflow-auto d-flex align-items-start flex-wrap" style="max-height: 25em;">
                   <pending-banner v-if="pendings.length > 0"
                                  v-for="pending in pendings"
                                  :key="pending.user_id"
@@ -16,7 +16,7 @@
                   <p style="width: 100%;" v-if="pendings.length <= 0">No pending requests at this moment!</p>
                 </div>
                 <h4 class="pt-3">Friend Requests</h4>
-                <div class="col messages pt-2 pb-1 overflow-auto d-flex align-items-start flex-wrap">
+                <div class="col messages pt-2 pb-1 overflow-auto d-flex align-items-start flex-wrap" style="max-height: 25em;">
                   <request-banner v-if="requests.length > 0"
                                  v-for="request in requests"
                                  :key="request.user_id"
