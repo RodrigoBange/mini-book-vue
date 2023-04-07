@@ -84,7 +84,7 @@ export default {
       writeReply.display = !writeReply.display;
     },
     async getReplies() {
-      await axios.get("/messages/replies/" + this.messageId)
+      await axios.get("/replies/messages/" + this.messageId)
           .then(response => {
             this.replies = response.data;
           })

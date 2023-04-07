@@ -91,7 +91,7 @@ export default {
       this.getPagination();
     },
     async getMessages() {
-      await axios.get("/messages/" + useUserStore().userId, {
+      await axios.get("/users/messages/" + useUserStore().userId, {
         params: {
           limit: this.limit,
           offset: this.offset,
@@ -105,7 +105,7 @@ export default {
         });
     },
     async getPagination() {
-      await axios.get("/messages/count/" + useUserStore().userId)
+      await axios.get("/users/messages/count/" + useUserStore().userId)
         .then(response => {
           this.messageCount = response.data;
           this.pages = Math.ceil(this.messageCount / this.limit);

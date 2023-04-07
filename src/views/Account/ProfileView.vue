@@ -1,8 +1,8 @@
 <template>
   <main class="d-flex justify-content-center align-items-center">
-    <div class="container rounded-0 bg-white p-4 profile h-100" v-if="dataFetched">
+    <div class="container rounded-0 bg-white p-4 profile h-100 overflow-auto" v-if="dataFetched">
       <div class="row h-100">
-        <div class="col-md-3 border-right h-100">
+        <div class="col-md-3 border-right">
           <div class="d-flex flex-column align-items-center text-center mb-2">
             <h4 class="text-right mb-2" v-if="user.first_name !== null">{{user.first_name}} {{user.last_name}}</h4>
             <h4 class="text-right mb-2" v-else>{{user.email}}</h4>
@@ -38,7 +38,7 @@
           </div>
         </div>
 
-        <div class="col-md-5 border-right overflow-auto h-100">
+        <div class="col-md-5 border-right overflow-auto" style="max-height: 80vh;">
           <div class="p-3">
             <div class="row h-100">
               <div v-if="messages.length === 0">
@@ -65,7 +65,7 @@
               <button class="btn btn-outline-primary m-2" @click="acceptRequest" v-if="isRequestPending">Accept</button>
               <button class="btn btn-outline-danger m-2" @click="declineRequest" v-if="isRequestPending">Decline</button>
             </div>
-            <div class="col-md-12">
+            <div class="col-md-12 overflow-auto" style="max-height: 80vh;">
               <label class="labels">Friends</label>
               <div class="d-flex flex-column">
                 <friend-banner v-for="friend in friends"
@@ -170,7 +170,7 @@ export default {
           )
     },
     async getUserMessages() {
-      await axios.get("/messages/users/" + this.id)
+      await axios.get("/users/messages/users/" + this.id)
           .then(
               result => {
                 this.messages = result.data;

@@ -7,7 +7,7 @@
     <div class="border-0 pt-2" v-show="display">
       <div class="d-flex flex-start w-100">
         <img class="rounded-circle shadow-1-strong me-3"
-            src="/images/blank_avatar.png" alt="avatar" width="65" height="65"
+            :src="userStore.profile_picture" alt="avatar" width="65" height="65"
         />
         <div class="form-outline w-75">
           <form @submit.prevent="postReply">
@@ -56,7 +56,7 @@ export default {
     async postReply() {
       this.message.time_posted = this.moment().format("YYYY-MM-DD HH:mm:ss");
       this.message.user_id = useUserStore().userId;
-      await axios.post("/messages/replies/" + this.parentId, this.message)
+      await axios.post("/replies/messages/" + this.parentId, this.message)
           .then(
               result => {
                 console.log(result);
