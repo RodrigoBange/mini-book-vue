@@ -56,7 +56,7 @@ export default {
       userCount: 0,
       usersFound: false,
       error: "",
-      limit: 1,
+      limit: 8,
       offset: 0,
       pages: 0,
     }

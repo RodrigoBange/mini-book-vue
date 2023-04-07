@@ -6,7 +6,8 @@ export const useUserStore = defineStore('userStore', {
         userId: '',
         email: '',
         token: '',
-        firstName: ''
+        firstName: '',
+        profile_picture: '',
     }),
     getters: {
         getLoggedIn() {

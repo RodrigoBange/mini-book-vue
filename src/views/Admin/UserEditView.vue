@@ -4,8 +4,8 @@
       <form class="row h-100 overflow-auto" @submit.prevent="saveChanges">
         <div class="col-md-3 border-right">
           <div class="d-flex flex-column align-items-center text-center">
-            <img class="rounded-circle profile-pic" src="/images/blank_avatar.png">
-            <button class="btn btn-primary">Change picture</button>
+            <img class="rounded-circle profile-pic" :src="user.profile_picture">
+            <button class="btn btn-primary" @click="changePicture">Change picture</button>
             <span> </span>
           </div>
         </div>
@@ -202,13 +202,20 @@ export default {
         this.selectedRelationalStatus = this.relationshipStatuses[0];
       }
     },
+    changePicture(e) {
+      let picture = "/images/pfp_" + (Math.floor(Math.random() * (13 - 1) + 1)) + ".png";
+      this.user.profile_picture = picture;
+      e.preventDefault();
+    },
     async saveChanges() {
       this.user.gender = this.selectedGender.gender;
       this.user.relation_status = this.selectedRelationalStatus.status;
+      this.user.profile_picture = this.user.profile_picture;
       await axios.put("/users/" + this.id, this.user)
           .then(
               result => {
                 console.log(result);
+
               }
           )
           .catch(

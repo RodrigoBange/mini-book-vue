@@ -33,7 +33,7 @@
           >
             <p class="m-0 nav-spacing" v-if="userStore.firstName !== 'null'">{{ userStore.firstName }}</p>
             <p class="m-0 nav-spacing" v-else>Profile</p>
-            <img src="/images/blank_avatar.png" class="rounded-circle avatar nav-spacing" style="height: 30px;">
+            <img :src="userStore.profile_picture" class="rounded-circle avatar nav-spacing" style="height: 30px;">
           </router-link>
         </li>
         <li class="nav-item d-flex align-items-center nav-spacing" v-if="loggedIn === true">
@@ -51,12 +51,13 @@
 
 <script>
 import {useUserStore} from "@/stores/UserStore";
+import axios from "@/axios-auth.js";
 
 export default {
   name: "Navigation",
   data() {
     return {
-      userStore: useUserStore()
+      userStore: useUserStore(),
     };
   },
   computed: {
@@ -73,16 +74,30 @@ export default {
   watch: {
       loggedIn: function (newValue, oldValue) {
         console.log("loggedIn changed from " + oldValue + " to " + newValue);
+        if (newValue === true) {
+          this.getProfilePicture();
+        }
       },
       isAdmin: function (newValue, oldValue) {
         console.log("isAdmin changed from " + oldValue + " to " + newValue);
-        console.log(newValue);
-      }
+      },
+  },
+  created() {
+    this.getProfilePicture();
   },
   methods: {
     logout() {
       this.userStore.logout();
       this.$router.push({path: "/login"});
+    },
+    getProfilePicture() {
+      axios.get("/users/" + this.userStore.userId)
+        .then(response => {
+          this.userStore.profile_picture = response.data.profile_picture;
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }
   }
 };

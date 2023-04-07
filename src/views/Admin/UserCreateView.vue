@@ -4,8 +4,8 @@
       <form class="row" @submit.prevent="createUser">
         <div class="col-md-3 border-right">
           <div class="d-flex flex-column align-items-center text-center">
-            <img class="rounded-circle profile-pic" src="/images/blank_avatar.png">
-            <button class="btn btn-primary">Change picture</button>
+            <img class="rounded-circle profile-pic" :src="user.profile_picture">
+            <button class="btn btn-primary" @click="changePicture">Change picture</button>
             <span> </span>
           </div>
         </div>
@@ -127,7 +127,7 @@ export default {
         city: "",
         state: "",
         country: "",
-        profile_picture: "",
+        profile_picture: "/images/blank_avatar.png",
         biography: "",
         gender: "",
         birthdate: "",
@@ -167,6 +167,11 @@ export default {
     }
   },
   methods: {
+    changePicture(e) {
+      let picture = "/images/pfp_" + (Math.floor(Math.random() * (13 - 1) + 1)) + ".png";
+      this.user.profile_picture = picture;
+      e.preventDefault();
+    },
     async createUser() {
       if (this.user.email !== "" && this.user.password !== "")
       {
@@ -182,7 +187,7 @@ export default {
                 error => console.log(error)
             );
       }
-    }
+    },
   }
 }
 </script>

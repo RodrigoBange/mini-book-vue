@@ -4,9 +4,8 @@
       <form class="row overflow-auto h-100" @submit.prevent="saveChanges">
         <div class="col-md-3 border-right">
           <div class="d-flex flex-column align-items-center text-center">
-            <img class="rounded-circle profile-pic" src="/images/blank_avatar.png">
-            <button class="btn btn-primary">Change picture</button>
-            <span> </span>
+            <img class="rounded-circle profile-pic" :src="user.profile_picture">
+            <button class="btn btn-primary" @click="changePicture">Change picture</button>
           </div>
         </div>
         <div class="col-md-5 border-right overflow-auto">
@@ -209,12 +208,18 @@ export default {
                 console.log(result);
                 useUserStore().firstName = this.user.first_name;
                 useUserStore().lastName = this.user.last_name;
+                useUserStore().profile_picture = this.user.profile_picture;
                 this.$router.push({path: "/profile/" + this.id});
               }
           )
           .catch(
               error => console.log(error)
           );
+    },
+    changePicture(e) {
+      let picture = "/images/pfp_" + (Math.floor(Math.random() * (13 - 1) + 1)) + ".png";
+      this.user.profile_picture = picture;
+      e.preventDefault();
     }
   }
 }
