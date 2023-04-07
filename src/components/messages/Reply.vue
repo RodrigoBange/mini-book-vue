@@ -54,7 +54,7 @@ export default {
   },
   methods: {
     async deleteReply() {
-      await axios.delete("/messages/replies/" + this.reply.message_id)
+      await axios.delete("/replies/messages/" + this.reply.message_id)
         .then(response => {
           if (response.data === true) {
             this.$emit("refresh-feed");
