@@ -7,6 +7,7 @@ export const useUserStore = defineStore('userStore', {
         email: '',
         token: '',
         firstName: '',
+        admin: false
     }),
     getters: {
         getLoggedIn() {
@@ -31,6 +32,8 @@ export const useUserStore = defineStore('userStore', {
                     this.email = response.data.email;
                     this.token = response.data.token;
                     this.firstName = response.data.firstName;
+
+                    this.getAdminStatus();
                 }
                 resolve(response);
             }).catch(error => reject(error));
@@ -48,6 +51,8 @@ export const useUserStore = defineStore('userStore', {
                 this.email = email;
                 this.userId = userId;
                 this.firstName = firstName;
+
+                this.getAdminStatus();
             }
         },
         logout() {
@@ -59,6 +64,13 @@ export const useUserStore = defineStore('userStore', {
             this.email = '';
             this.userId = '';
             this.firstName = '';
+            this.admin = false;
+        },
+        getAdminStatus() {
+            axios.get('/users/admins/' + this.userId)
+                .then(response => {
+                    this.admin = response.data;
+                }).catch(error => console.log(error));
         }
     }
 })

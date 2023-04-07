@@ -1,7 +1,7 @@
 <template>
   <main class="d-flex justify-content-center align-items-center">
     <div class="container rounded-0 bg-white p-3 h-100" v-if="dataFetched">
-      <form class="row" @submit.prevent="saveChanges">
+      <form class="row h-100 overflow-auto" @submit.prevent="saveChanges">
         <div class="col-md-3 border-right">
           <div class="d-flex flex-column align-items-center text-center">
             <img class="rounded-circle profile-pic" src="/images/blank_avatar.png">
@@ -92,9 +92,9 @@
             </div>
           </div>
         </div>
-        <div class="row">
+        <div class="row d-flex">
           <div class="col-md-3"></div>
-          <div class="text-center d-flex col-md-9">
+          <div class="text-center d-flex col-md-9 align-items-end">
             <button class="btn btn-primary profile-button save-btn" type="submit">Save changes</button>
             <router-link :to="'/admin/users'" class="btn btn-outline-secondary" type="button">Cancel</router-link>
           </div>

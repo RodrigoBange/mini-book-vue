@@ -69,11 +69,14 @@ export default {
       pages: 0,
     };
   },
-  async mounted() {
+  beforeRouteEnter(to, from, next) {
     if (!useUserStore().getLoggedIn) {
-      this.$router.push({path: "/login"});
+      next("/login");
+    } else {
+      next();
     }
-
+  },
+  async mounted() {
     await this.updateFeed();
 
     // Update feed every 20 seconds (Web sockets would have been better if I wasn't using MySQL)

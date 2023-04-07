@@ -7,9 +7,6 @@ import Profile from "@/views/Account/ProfileView.vue";
 import EditProfile from "@/views/Account/EditProfileView.vue";
 import SearchProfile from "@/views/Account/SearchProfileView.vue";
 import RequestsView from "@/views/Account/RequestsView.vue";
-import ProductList from '../components/products/ProductList.vue';
-import CreateProduct from '../components/products/CreateProduct.vue';
-import EditProduct from '../components/products/EditProduct.vue';
 import UsersPanelView from "@/views/Admin/UsersPanelView.vue";
 import UserEditView from "@/views/Admin/UserEditView.vue";
 import UserCreateView from "@/views/Admin/UserCreateView.vue";
@@ -22,9 +19,6 @@ const routes = [
   { path: '/editprofile/:id', component: EditProfile, props: true},
   { path: '/search', component: SearchProfile },
   { path: '/requests', component: RequestsView },
-  { path: '/products', component: ProductList },
-  { path: '/createproduct', component: CreateProduct },
-  { path: '/editproduct/:id', component: EditProduct, props: true  },
   { path: '/admin/users', component: UsersPanelView },
   { path: '/admin/users/edit/:id', component: UserEditView, props: true  },
   { path: '/admin/users/create', component: UserCreateView}
