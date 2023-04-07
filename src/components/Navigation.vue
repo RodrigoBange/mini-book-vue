@@ -15,6 +15,11 @@
             >Search
           </router-link>
         </li>
+        <li class="nav-item d-flex align-items-center" v-if="isAdmin === true">
+          <router-link to="/admin" class="nav-link" active-class="active"
+          >Management
+          </router-link>
+        </li>
       </ul>
       <ul class="navbar-nav mb-2 mb-md-0">
         <li class="nav-item d-flex align-items-center" v-if="loggedIn === true">
@@ -57,12 +62,22 @@ export default {
   computed: {
     loggedIn: function () {
       return this.userStore.getLoggedIn;
-    }
+    },
+    isAdmin: function() {
+      if (this.userStore.userId !== '')
+      {
+        return this.userStore.getAdmin;
+      }
+    },
   },
   watch: {
       loggedIn: function (newValue, oldValue) {
-      console.log("loggedIn changed from " + oldValue + " to " + newValue);
-    }
+        console.log("loggedIn changed from " + oldValue + " to " + newValue);
+      },
+      isAdmin: function (newValue, oldValue) {
+        console.log("isAdmin changed from " + oldValue + " to " + newValue);
+        console.log(newValue);
+      }
   },
   methods: {
     logout() {

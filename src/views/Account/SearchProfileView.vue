@@ -61,6 +61,13 @@ export default {
       pages: 0,
     }
   },
+  beforeRouteEnter(to, from, next) {
+    if (!useUserStore().getLoggedIn) {
+      next("/login");
+    } else {
+      next();
+    }
+  },
   mounted() {
     this.search();
   },

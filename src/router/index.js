@@ -7,9 +7,11 @@ import Profile from "@/views/Account/ProfileView.vue";
 import EditProfile from "@/views/Account/EditProfileView.vue";
 import SearchProfile from "@/views/Account/SearchProfileView.vue";
 import RequestsView from "@/views/Account/RequestsView.vue";
+import AdminPanelView from "@/views/Admin/AdminPanelView.vue";
 import UsersPanelView from "@/views/Admin/UsersPanelView.vue";
 import UserEditView from "@/views/Admin/UserEditView.vue";
 import UserCreateView from "@/views/Admin/UserCreateView.vue";
+import MessagePanelView from "@/views/Admin/MessagePanelView.vue";
 
 const routes = [
   { path: '/', component: Feed },
@@ -19,9 +21,11 @@ const routes = [
   { path: '/editprofile/:id', component: EditProfile, props: true},
   { path: '/search', component: SearchProfile },
   { path: '/requests', component: RequestsView },
+  { path: '/admin', component: AdminPanelView },
   { path: '/admin/users', component: UsersPanelView },
   { path: '/admin/users/edit/:id', component: UserEditView, props: true  },
-  { path: '/admin/users/create', component: UserCreateView}
+  { path: '/admin/users/create', component: UserCreateView},
+  { path: '/admin/messages', component: MessagePanelView}
 ];
 
 const router = createRouter({

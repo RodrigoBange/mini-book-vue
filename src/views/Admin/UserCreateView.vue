@@ -111,6 +111,7 @@
 <script>
 import moment from "moment";
 import axios from "@/axios-auth";
+import {useUserStore} from "@/stores/UserStore";
 
 export default {
   name: "UserCreateView",
@@ -154,6 +155,15 @@ export default {
       ],
       selectedRelationalStatus: 0,
       moment: moment,
+    }
+  },
+  beforeRouteEnter(to, from, next) {
+    if (!useUserStore().getLoggedIn) {
+      next("/login");
+    }  else if (!useUserStore().getAdmin) {
+      next("/");
+    } else {
+      next();
     }
   },
   methods: {

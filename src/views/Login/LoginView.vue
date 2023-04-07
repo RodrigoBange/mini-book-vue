@@ -2,8 +2,8 @@
   <main class="gradient-form d-flex justify-content-center align-items-center">
     <div class="container">
       <div class="row d-flex justify-content-center align-items-center">
-        <div class="col-xl-5">
-          <div class="card rounded-3 text-black">
+        <div class="col-xl-5 h-100">
+          <div class="card rounded-3 text-black h-100">
             <div class="row g-0">
               <div class="col-lg-12">
                 <div class="card-body p-md-3 mx-md-3">
@@ -91,10 +91,24 @@ main {
   background: linear-gradient(145deg, rgba(196,235,253,1) 0%, rgba(204,173,247,1) 100%);
 }
 
-@media (min-width: 769px) {
+@media screen and (max-width: 768px) {
   .gradient {
     border-top-right-radius: .3rem;
     border-bottom-right-radius: .3rem;
+  }
+
+  .container {
+    height: 100%;
+  }
+
+  .row {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .col-xl-5 {
+    padding: 0;
   }
 }
 </style>

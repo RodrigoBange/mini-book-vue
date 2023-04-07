@@ -48,6 +48,13 @@ export default {
       pendings: [],
     };
   },
+  beforeRouteEnter(to, from, next) {
+    if (!useUserStore().getLoggedIn) {
+      next("/login");
+    } else {
+      next();
+    }
+  },
   mounted() {
     this.getRequests();
     this.getPending();

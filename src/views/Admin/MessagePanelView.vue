@@ -6,17 +6,16 @@
           <div class="card rounded-0 h-100" style="width: 100%;">
             <div class="form-outline p-4 pb-1 pt-3">
               <input type="search" id="form1" class="form-control"
-                     placeholder="Search for people by name, surname or email" aria-label="Search"
+                     placeholder="Search for message by text by name, surname or email" aria-label="Search"
                      v-model="searchWord"/>
-              <router-link to="/admin/users/create" class="btn btn-primary mt-2">Create User</router-link>
             </div>
             <div class="d-flex p-3 pt-0 flex-row flex-wrap profiles h-100 overflow-auto align-content-start">
-              <UserBanner
-                  v-for="user in users"
-                  :key="user.user_id"
-                  :user="user"
-                v-on:delete-user="resetSearch"/>
-              <p class="m-2 w-100 text-center" v-if="!usersFound">No users were found.</p>
+              <MessageBanner
+                  v-for="message in messages"
+                  :key="message.message_id"
+                  :message="message"
+                v-on:delete-message="resetSearch"/>
+              <p class="m-2 w-100 text-center" v-if="!messagesFound">No messages were found.</p>
             </div>
             <nav aria-label="navigation" class="bg-white" style="width: 100%;">
               <ul class="pagination m-0">
@@ -45,20 +44,20 @@
 
 <script>
 import axios from "@/axios-auth";
-import UserBanner from "@/components/admin/UserBanner.vue";
+import MessageBanner from "@/components/admin/MessageBanner.vue";
 import {useUserStore} from "@/stores/UserStore";
 
 export default {
-  name: "UsersPanel",
+  name: "MessagePanelView",
   components: {
-    UserBanner,
+    MessageBanner,
   },
   data() {
     return {
       searchWord: "",
-      users: [],
-      userCount: 0,
-      usersFound: false,
+      messages: [],
+      messageCount: 0,
+      messagesFound: false,
       error: "",
       limit: 5,
       offset: 0,
@@ -68,7 +67,7 @@ export default {
   beforeRouteEnter(to, from, next) {
     if (!useUserStore().getLoggedIn) {
       next("/login");
-    }  else if (!useUserStore().getAdmin) {
+    } else if (!useUserStore().getAdmin) {
       next("/");
     } else {
       next();
@@ -80,7 +79,7 @@ export default {
   methods: {
     async search() {
       if (this.searchWord.length > 0 && this.searchWord !== " ") {
-        await axios.get("/users/profiles/" + this.searchWord, {
+        await axios.get("/messages/" + this.searchWord, {
           params: {
             limit: this.limit,
             offset: this.offset
@@ -88,21 +87,21 @@ export default {
         })
             .then(
                 response => {
-                  this.users = response.data;
-                  this.usersFound = true;
+                  this.messages = response.data;
+                  this.messagesFound = true;
                   this.getPagination(this.searchWord)
                 }
             )
             .catch(
                 error => {
-                  this.usersFound = false;
-                  this.users = [];
+                  this.messagesFound = false;
+                  this.messages = [];
                   this.error = error.data.message;
                   this.pages = 0;
                 }
             );
       } else if (this.searchWord.length === 0) {
-        await axios.get("/users/profiles", {
+        await axios.get("/messages", {
           params: {
             limit: this.limit,
             offset: this.offset
@@ -110,15 +109,15 @@ export default {
         })
             .then(
                 response => {
-                  this.users = response.data;
-                  this.usersFound = true;
+                  this.messages = response.data;
+                  this.messagesFound = true;
                   this.getPagination(this.searchWord)
                 }
             )
             .catch(
                 error => {
-                  this.usersFound = false;
-                  this.users = [];
+                  this.messagesFound = false;
+                  this.messages = [];
                   this.error = error.data.message;
                   this.pages = 0;
                 }
@@ -127,7 +126,7 @@ export default {
     },
     async getPagination(searchWord) {
       if (searchWord.length > 0 && searchWord !== " ") {
-        await axios.get("/users/count/" + searchWord)
+        await axios.get("/admin/messages/count/" + searchWord)
             .then(response => {
               this.messageCount = response.data;
               this.pages = Math.ceil(this.messageCount / this.limit);
@@ -136,7 +135,7 @@ export default {
               console.log(error);
             });
       } else if (searchWord.length === 0) {
-        await axios.get("/users/count")
+        await axios.get("/admin/messages/count")
             .then(response => {
               this.messageCount = response.data;
               this.pages = Math.ceil(this.messageCount / this.limit);

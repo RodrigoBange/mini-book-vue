@@ -157,6 +157,15 @@ export default {
       moment: moment,
     }
   },
+  beforeRouteEnter(to, from, next) {
+    if (!useUserStore().getLoggedIn) {
+      next("/login");
+    }  else if (!useUserStore().getAdmin) {
+      next("/");
+    } else {
+      next();
+    }
+  },
   mounted() {
     this.getUser().then(() => {
       this.getSelectedGender();
