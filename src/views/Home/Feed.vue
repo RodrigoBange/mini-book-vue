@@ -105,9 +105,10 @@ export default {
         });
     },
     async getPagination() {
-      await axios.get("/users/messages/count/" + useUserStore().userId)
+      await axios.get("/users/messages/" + useUserStore().userId)
         .then(response => {
-          this.messageCount = response.data;
+          let result = response.data;
+          this.messageCount = result.length;
           this.pages = Math.ceil(this.messageCount / this.limit);
         })
         .catch(error => {
